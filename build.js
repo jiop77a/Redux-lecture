@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('loaded');
   const getEtym = async (word) => {
     const proxyurl = "https://cors-anywhere.herokuapp.com/";
     let url = `http://www.etymonline.com/index.php?term=${word}`;
