@@ -12,8 +12,8 @@ document.addEventListener("DOMContentLoaded", () => {
     let links = html.querySelectorAll("a")
     links.forEach(el => {
       let oldHref = el.href;
-      let index = /index/.exec(oldHref);
-      el.href = `http://www.etymonline.com/${oldHref.slice(8)}`;
+      let index = /index/.exec(oldHref).index;
+      el.href = `http://www.etymonline.com/${oldHref.slice(index)}`;
     })
     return html;
   };

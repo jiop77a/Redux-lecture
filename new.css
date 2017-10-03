@@ -1,0 +1,264 @@
+body, html {
+  width: 100%
+}
+
+body {
+  background-color: #700020;
+  color: #000;
+  font-family: Georgia, Garamond, Times New Roman, Times, serif;
+  font-size: 1pc;
+  margin: 0 auto;
+  max-width: 75pc
+}
+
+a:active, a:hover, a:link, a:visited {
+  color: #800020;
+  text-decoration: none;
+  font-weight: 700
+}
+
+p {
+  margin-top: 0
+}
+
+button.link {
+  background: transparent;
+  border: 0;
+  color: #800020;
+  cursor: pointer;
+  font-family: Georgia, Garamond, Times New Roman, Times, serif;
+  font-size: 1pc;
+  font-weight: 700;
+  margin: 0;
+  padding: 0;
+  text-decoration: none
+}
+
+input {
+  padding: .25em
+}
+
+.crossreference, .foreign, .sponsors-term {
+  font-style: italic
+}
+
+.sponsors-term {
+  font-weight: 700
+}
+
+a.dictionary, a.edit {
+  font-style: italic;
+  font-size: xx-small;
+  margin-left: 1em
+}
+
+a.dictionary img {
+  border: 0;
+  vertical-align: middle
+}
+
+#container {
+  background-color: #fff;
+  border: 1px solid #000;
+  margin: 1em;
+  padding: 1em
+}
+
+#center_message, #navigation {
+  background-color: #fffbec;
+  font-size: 1em;
+  color: #000;
+  font-weight: 700;
+  margin-bottom: 1em;
+  padding: 1em;
+  text-align: center;
+  border: 1px solid #000
+}
+
+#center_message p:last-child {
+  margin-bottom: 0
+}
+
+#logo {
+  margin-bottom: .5em
+}
+
+#logo img {
+  border: 0
+}
+
+#browse, .paging {
+  width: 100%;
+  text-align: center;
+  margin: .5em auto
+}
+
+#browse ul, .paging ul {
+  list-style: none;
+  display: inline;
+  padding: 0 .25em;
+  border: 1px solid #000;
+  font-family: Trebuchet MS, Verdana, Arial, sans-serif
+}
+
+#browse li, .paging li {
+  display: inline
+}
+
+#browse li a, .paging li a {
+  padding: 0 .25em;
+  border-width: 0 1px;
+  border-style: solid;
+  border-color: #fffbec
+}
+
+#browse li a:hover, .paging li a.current, .paging li a:hover {
+  background-color: #fff;
+  border-color: #000
+}
+
+#dictionary {
+  background-color: #fffbec;
+  padding-top: .5em;
+  border: 1px solid #000;
+  margin-bottom: 1em;
+  padding: .5em
+}
+
+#dictionary p {
+  padding: 0;
+  margin: 0
+}
+
+#dictionary dd, #dictionary dt {
+  background-color: #fffbec;
+  margin-left: 0;
+  padding: 0 .5em
+}
+
+#dictionary dt {
+  padding-top: .5em
+}
+
+#dictionary dd {
+  padding-bottom: .5em
+}
+
+#dictionary .highlight {
+  background-color: #ddd9ca
+}
+
+#google-adsense {
+  margin: 1em;
+  text-align: center
+}
+
+#footer {
+  border: 1px solid #000;
+  background-color: #fffbec
+}
+
+#footer ul {
+  list-style: none;
+  padding: 0;
+  margin: .5em
+}
+
+#footer li {
+  padding: 0;
+  margin: 0
+}
+
+#footer #links {
+  float: left;
+  text-align: left
+}
+
+#footer #credits {
+  float: right;
+  text-align: right
+}
+
+#sponsor-link {
+  text-align: center;
+  font-weight: 700;
+  margin: 1.5em 0
+}
+
+#sponsor-link p {
+  margin: 0
+}
+
+#sponsor-link #paypal-button {
+  float: right
+}
+
+#login-form {
+  text-align: center;
+  margin: 2em auto;
+  border: 1px solid #000
+}
+
+.form-row .form-label {
+  text-align: right
+}
+
+.form-row .form-element {
+  text-align: left
+}
+
+#addterm, #search_and_replace {
+  text-align: right
+}
+
+#main-content-edit label {
+  display: block
+}
+
+#main-content-edit textarea {
+  width: 98%
+}
+
+#main-content-edit input, #main-content-edit textarea {
+  background-color: #fffbec;
+  border: 2px solid #000
+}
+
+.blank {
+  clear: both;
+  line-height: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  visibility: hidden
+}
+
+* html #container, * html #dictionary dl, * html #footer {
+  height: 1%
+}
+
+#ad-icon {
+  margin-left: -390px
+}
+
+#site-banner {
+  color: red;
+  font-family: sans-serif;
+  font-size: 2em;
+  font-weight: 700
+}
+
+#alert_message {
+  background-color: #800020;
+  color: #fffbec;
+  font-family: Trebuchet MS, Verdana, Arial, sans-serif;
+  font-size: 1.25em;
+  margin: 0 auto 1em;
+  padding: 1em;
+  width: 700px;
+  line-height: 1.4em
+}
+
+#alert_message p:last-child {
+  margin-bottom: 0
+}
