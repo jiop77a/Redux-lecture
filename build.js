@@ -9,7 +9,13 @@ document.addEventListener("DOMContentLoaded", () => {
     let parser = new DOMParser();
     let htmlDoc = parser.parseFromString(words, "text/html");
     let html = htmlDoc.getElementById("dictionary");
-    return html.innerText;
+    // let links = html.querySelectorAll("a")
+    // links.forEach(el => {
+    //   let oldHref = el.href;
+    //   let index = /index/.exec(oldHref);
+    //   el.href = `www.etymonline.com/${oldHref.slice(8)}`;
+    // })
+    return html;
   };
 
   let closeTimer = () => {
@@ -20,10 +26,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 1000));
   };
 
-  const populateBottom = popup => {
+  const populateBottom = result => {
     let bottomDiv = document.getElementById("bottomDiv");
     bottomDiv.innerHTML = "";
-    let popDup = popup.cloneNode(true);
+    let popDup = result.cloneNode(true);
     popDup.className = "popDup";
     bottomDiv.appendChild(popDup);
   };
@@ -47,16 +53,14 @@ document.addEventListener("DOMContentLoaded", () => {
         let preText = e.target.innerHTML;
         let text = preText.replace(/^\W+/, "").replace(/\W+$/, "");
         getEtym(text).then(result => {
-          popup = document.createElement("div");
-          popup.className = "popup";
-          popup.innerHTML = result;
-          el.appendChild(popup);
+          result.className = "popup";
+          el.appendChild(result);
 
-          populateBottom(popup);
+          populateBottom(result);
         });
       } else {
-        popup = el.lastChild;
-        populateBottom(popup);
+        result = el.lastChild;
+        populateBottom(result);
       }
     }, 1000));
   };
