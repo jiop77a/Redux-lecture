@@ -11,24 +11,71 @@ document.addEventListener('DOMContentLoaded', () => {
     return html.innerText;
   }
 
-  const alertText = (e) => {
+  let openTimer = () => {
+    console.log("open timer set")
+    let bottomDiv = document.getElementById('bottomDiv');
+    window.openID = setTimeout(() => {
+      bottomDiv.className = "visible";
+    }, 1000)
+  }
+
+  let closeTimer = () => {
+    console.log("close timer set")
+    let bottomDiv = document.getElementById('bottomDiv');
+    window.closeID = setTimeout(() => {
+      bottomDiv.className = "invisible";
+    }, 1000)
+  }
+
+  const populateBottom = (popup) => {
+    let bottomDiv = document.getElementById('bottomDiv');
+    bottomDiv.innerHTML = '';
+    let popDup = popup.cloneNode(true);
+    popDup.className = 'popDup';
+    bottomDiv.appendChild(popDup);
+  }
+
+  const addSpinner = () => {
+    let bottomDiv = document.getElementById('bottomDiv');
+    bottomDiv.innerHTML = '';
+    let spinner = document.createElement('div');
+    spinner.className = 'loader';
+    bottomDiv.appendChild(spinner);
+  }
+
+  const mouseEnterWord = (e) => {
     let el = e.target;
-    if (el.childNodes.length <= 1) {
+    openTimer();
+    if (el.lastChild.classList === undefined) {
+      //create spinner
+      //add spinner to el
+      addSpinner();
       let preText = e.target.innerHTML;
-      let begReg = /^\W+/;
-      let endReg = /\W+$/;
-      let text = preText.replace(begReg, "").replace(endReg, "");
+      let text = preText.replace(/^\W+/, "").replace(/\W+$/, "");
       getEtym(text)
-      .then(result => {
-        let d = document.createElement('div');
-        d.className = "popup"
-        d.innerHTML = result;
-        el.appendChild(d);
-      })
+        .then(result => {
+          popup = document.createElement('div');
+          popup.className = "popup"
+          popup.innerHTML = result;
+          //deletespinner
+          el.appendChild(popup);
+
+          populateBottom(popup);
+        })
+    } else {
+
+      popup = el.lastChild;
+      populateBottom(popup);
+
     };
-    if (el.childNodes[1]) {
-      el.childNodes[1].focus();
-    };
+  }
+
+  const mouseLeaveWord = () => {
+    //remove spinner
+    if (window.openID) {
+      clearTimeout(openID);
+    }
+    closeTimer();
   }
 
   const makeSpans = () => {
@@ -65,7 +112,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
       s.appendChild(makeText(txt));
-      s.addEventListener('mouseenter', alertText)
+      s.addEventListener('mouseenter', mouseEnterWord);
+      s.addEventListener('mouseleave', mouseLeaveWord);
       return s;
     };
 
@@ -84,8 +132,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  let makeBottomDiv = () => {
+    let bottomDiv = document.createElement('div');
+    bottomDiv.id = "bottomDiv";
+    bottomDiv.className = "invisible";
+
+    bottomDiv.addEventListener('mouseenter', () => {
+      console.log('entered bottomDiv')
+      if (window.closeID) {
+        clearTimeout(closeID);
+      }
+    })
+
+    bottomDiv.addEventListener('mouseleave', (e) => {
+      console.log('exited bottomDiv')
+      closeTimer();
+    })
+    document.body.appendChild(bottomDiv);
+
+  }
+
+
+
+  makeBottomDiv();
   makeSpans();
-  let bottomDiv = document.createElement('div');
-  bottomDiv.id = "bottomDiv";
-  document.body.appendChild(bottomDiv);
 });
