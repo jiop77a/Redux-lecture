@@ -9,12 +9,12 @@ document.addEventListener("DOMContentLoaded", () => {
     let parser = new DOMParser();
     let htmlDoc = parser.parseFromString(words, "text/html");
     let html = htmlDoc.getElementById("dictionary");
-    // let links = html.querySelectorAll("a")
-    // links.forEach(el => {
-    //   let oldHref = el.href;
-    //   let index = /index/.exec(oldHref);
-    //   el.href = `www.etymonline.com/${oldHref.slice(8)}`;
-    // })
+    let links = html.querySelectorAll("a")
+    links.forEach(el => {
+      let oldHref = el.href;
+      let index = /index/.exec(oldHref);
+      el.href = `http://www.etymonline.com/${oldHref.slice(8)}`;
+    })
     return html;
   };
 
