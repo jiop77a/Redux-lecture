@@ -2,6 +2,10 @@ body {
   margin: 10px;
 }
 
+.alexClass:hover {
+  background-color: yellow;
+}
+
 .popup {
   display: none;
 }
@@ -12,6 +16,7 @@ body {
   padding: 5px;
   font-size: 12px;
   color: darkslategrey;
+  white-space: pre-line;
 }
 
 #bottomDiv {
