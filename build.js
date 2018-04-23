@@ -1,4 +1,4 @@
-/* global Redux, React, ReactDOM */
+/* global React, ReactDOM */
 
 const counter = (state = 0, action) => {
   switch (action.type) {
