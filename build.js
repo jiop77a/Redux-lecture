@@ -1,4 +1,4 @@
-/* global Redux */
+/* global Redux, React, ReactDOM */
 
 const counter = (state = 0, action) => {
   switch (action.type) {
@@ -33,20 +33,36 @@ const createStore = (reducer) => {
   return { getState, dispatch, subscribe };
 };
 
+const onIncrement = () => {
+  store.dispatch({type: 'INCREMENT'});
+};
+
+const onDecrement = () => {
+  store.dispatch({type: 'DECREMENT'});
+};
+
+const Counter = ({ value }) => (
+  React.createElement('div', null,
+    React.createElement('h1', null, value),
+    React.createElement('button', {onClick: onIncrement}, '+' ),
+    React.createElement('button', {onClick: onDecrement}, '-' )
+  )
+);
 
 const store = createStore(counter);
 
 const render = () => {
-  document.body.innerText = store.getState();
+  ReactDOM.render(
+    React.createElement(Counter, {value: store.getState()}),
+    document.getElementById('root')
+  );
 };
 
 store.subscribe(render);
 render();
 
 
-document.addEventListener('click', () => {
-  store.dispatch({type: 'INCREMENT'});
-});
+
 
 // expect(
 //   counter(0, { type: 'INCREMENT' })
