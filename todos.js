@@ -1,4 +1,4 @@
-/* global deepFreeze */
+/* global deepFreeze, Redux */
 
 const todo = (state, action) => {
   switch (action.type) {
@@ -35,6 +35,37 @@ const todos = (state = [], action) => {
       return state;
   }
 };
+
+const visibilityFilter = (state = 'SHOW_ALL', action) => {
+  switch (action.type) {
+    case 'SET_VISIBILITY_FILTER':
+      return action.filter;
+    default:
+      return state;
+  }
+}
+
+const { combineReducers } = Redux;
+const todoApp = combineReducers({
+  todos,
+  visibilityFilter
+})
+
+// const todoApp = (state = {}, action) => {
+//   return {
+//     todos: todos(
+//       state.todos,
+//       action
+//     ),
+//     visibilityFilter: visibilityFilter(
+//       state.visibilityFilter,
+//       action
+//     )
+//   }
+// }
+
+const { createStore } = Redux;
+const store = createStore(todoApp);
 
 const testAddTodo = () => {
   const stateBefore = [];
