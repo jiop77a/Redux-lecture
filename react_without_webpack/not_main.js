@@ -1,3 +1,3 @@
 export default function() {
-  return 'Goodbye World';
+  return 'Hello World';
 }

@@ -1,4 +1,4 @@
 export default function () {
-  return 'Goodbye World';
+  return 'Hello World';
 }
 //# sourceMappingURL=../not_main.js.map
