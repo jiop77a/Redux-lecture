@@ -1,6 +1,7 @@
 /* global React, ReactDOM */
+import notMain from './not_main.js';
 
-const TodoApp = () => <h1>"goodbye world"</h1>;
+const TodoApp = () => (<h1>{notMain()}</h1>);
 
 
 ReactDOM.render(

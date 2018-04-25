@@ -1,9 +1,10 @@
 /* global React, ReactDOM */
+import notMain from './not_main.js';
 
 const TodoApp = () => React.createElement(
   'h1',
   null,
-  '"goodbye world"'
+  notMain()
 );
 
 ReactDOM.render(React.createElement(TodoApp, null), document.getElementById('root'));
