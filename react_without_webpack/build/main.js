@@ -62,14 +62,18 @@ class TodoApp extends Component {
     return React.createElement(
       'div',
       null,
+      React.createElement('input', { ref: node => {
+          this.input = node;
+        } }),
       React.createElement(
         'button',
         { onClick: () => {
             store.dispatch({
               type: 'ADD_TODO',
-              text: 'Test',
+              text: this.input.value,
               id: nextTodoId++
             });
+            this.input.value = '';
           } },
         'Add Todo'
       ),
