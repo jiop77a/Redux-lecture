@@ -1,7 +1,7 @@
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 /* global React, ReactDOM, Redux */
-// import notMain from './not_main.js';
+import { Todo, TodoList } from './presentational.js';
 
 const todo = (state, action) => {
   switch (action.type) {
@@ -79,6 +79,28 @@ const FilterLink = ({ filter, currentFilter, children }) => {
   );
 };
 
+// const Todo = ({onClick, completed, text}) => (
+//   <li
+//       onClick={onClick}
+//       style={{
+//         textDecoration: completed ? 'line-through' : 'none'
+//       }}>
+//     {text}
+//   </li>
+// );
+//
+// const TodoList = ({todos, onTodoClick}) => (
+//   <ul>
+//     {todos.map(todo =>
+//       <Todo
+//       key={todo.id}
+//       {...todo}
+//       onClick={() => onTodoClick(todo.id)}
+//       />
+//     )}
+//   </ul>
+// );
+
 const getVisibleTodos = (todos, filter) => {
   switch (filter) {
     case 'SHOW_ALL':
@@ -113,24 +135,12 @@ class TodoApp extends Component {
           } },
         'Add Todo'
       ),
-      React.createElement(
-        'ul',
-        null,
-        visibleTodos.map(todo => React.createElement(
-          'li',
-          { key: todo.id,
-            onClick: () => {
-              store.dispatch({
-                type: 'TOGGLE_TODO',
-                id: todo.id
-              });
-            },
-            style: {
-              textDecoration: todo.completed ? 'line-through' : 'none'
-            } },
-          todo.text
-        ))
-      ),
+      React.createElement(TodoList, {
+        todos: visibleTodos,
+        onTodoClick: id => store.dispatch({
+          type: 'TOGGLE_TODO',
+          id
+        }) }),
       React.createElement(
         'p',
         null,
@@ -143,7 +153,7 @@ class TodoApp extends Component {
             currentFilter: visibilityFilter },
           'All'
         ),
-        ' ',
+        ', ',
         React.createElement(
           FilterLink,
           {
@@ -152,7 +162,7 @@ class TodoApp extends Component {
           },
           'Active'
         ),
-        ' ',
+        ', ',
         React.createElement(
           FilterLink,
           {
