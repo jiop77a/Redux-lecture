@@ -55,10 +55,38 @@ const store = createStore(todoApp);
 
 const { Component } = React;
 
-let nextTodoId = 0;
+const FilterLink = ({ filter, children }) => {
+  return React.createElement(
+    'a',
+    {
+      href: '#',
+      onClick: e => {
+        e.preventDefault();
+        store.dispatch({
+          type: 'SET_VISIBILITY_FILTER',
+          filter
+        });
+      }
+    },
+    children
+  );
+};
 
+const getVisibleTodos = (todos, filter) => {
+  switch (filter) {
+    case 'SHOW_ALL':
+      return todos;
+    case 'SHOW_COMPLETED':
+      return todos.filter(t => t.completed);
+    case 'SHOW_ACTIVE':
+      return todos.filter(t => !t.completed);
+  }
+};
+
+let nextTodoId = 0;
 class TodoApp extends Component {
   render() {
+    const visibleTodos = getVisibleTodos(this.props.todos, this.props.visibilityFilter);
     return React.createElement(
       'div',
       null,
@@ -80,7 +108,7 @@ class TodoApp extends Component {
       React.createElement(
         'ul',
         null,
-        this.props.todos.map(todo => React.createElement(
+        visibleTodos.map(todo => React.createElement(
           'li',
           { key: todo.id,
             onClick: () => {
@@ -94,15 +122,36 @@ class TodoApp extends Component {
             } },
           todo.text
         ))
+      ),
+      React.createElement(
+        'p',
+        null,
+        'Show: ',
+        ' ',
+        React.createElement(
+          FilterLink,
+          { filter: 'SHOW_ALL' },
+          'All'
+        ),
+        ' ',
+        React.createElement(
+          FilterLink,
+          { filter: 'SHOW_ACTIVE' },
+          'Active'
+        ),
+        ' ',
+        React.createElement(
+          FilterLink,
+          { filter: 'SHOW_COMPLETED' },
+          'Completed'
+        )
       )
     );
   }
 }
 
 const render = () => {
-  ReactDOM.render(React.createElement(TodoApp, {
-    todos: store.getState().todos
-  }), document.getElementById('root'));
+  ReactDOM.render(React.createElement(TodoApp, store.getState()), document.getElementById('root'));
 };
 
 store.subscribe(render);
