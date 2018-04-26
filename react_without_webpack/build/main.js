@@ -11,8 +11,6 @@ const todoApp = combineReducers({
 
 const store = createStore(todoApp);
 
-const { Component } = React;
-
 const getVisibleTodos = (todos, filter) => {
   switch (filter) {
     case 'SHOW_ALL':
