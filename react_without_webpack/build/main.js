@@ -55,7 +55,14 @@ const store = createStore(todoApp);
 
 const { Component } = React;
 
-const FilterLink = ({ filter, children }) => {
+const FilterLink = ({ filter, currentFilter, children }) => {
+  if (filter === currentFilter) {
+    return React.createElement(
+      'span',
+      null,
+      children
+    );
+  }
   return React.createElement(
     'a',
     {
@@ -86,7 +93,8 @@ const getVisibleTodos = (todos, filter) => {
 let nextTodoId = 0;
 class TodoApp extends Component {
   render() {
-    const visibleTodos = getVisibleTodos(this.props.todos, this.props.visibilityFilter);
+    const { todos, visibilityFilter } = this.props;
+    const visibleTodos = getVisibleTodos(todos, visibilityFilter);
     return React.createElement(
       'div',
       null,
@@ -130,19 +138,27 @@ class TodoApp extends Component {
         ' ',
         React.createElement(
           FilterLink,
-          { filter: 'SHOW_ALL' },
+          {
+            filter: 'SHOW_ALL',
+            currentFilter: visibilityFilter },
           'All'
         ),
         ' ',
         React.createElement(
           FilterLink,
-          { filter: 'SHOW_ACTIVE' },
+          {
+            filter: 'SHOW_ACTIVE',
+            currentFilter: visibilityFilter
+          },
           'Active'
         ),
         ' ',
         React.createElement(
           FilterLink,
-          { filter: 'SHOW_COMPLETED' },
+          {
+            filter: 'SHOW_COMPLETED',
+            currentFilter: visibilityFilter
+          },
           'Completed'
         )
       )
