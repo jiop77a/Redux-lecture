@@ -82,7 +82,16 @@ class TodoApp extends Component {
         null,
         this.props.todos.map(todo => React.createElement(
           'li',
-          { key: todo.id },
+          { key: todo.id,
+            onClick: () => {
+              store.dispatch({
+                type: 'TOGGLE_TODO',
+                id: todo.id
+              });
+            },
+            style: {
+              textDecoration: todo.completed ? 'line-through' : 'none'
+            } },
           todo.text
         ))
       )
