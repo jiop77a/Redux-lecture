@@ -1,5 +1,5 @@
 /* global React, ReactDOM, Redux */
-import { Todo, TodoList, AddTodo, FilterLink, Footer } from './presentational.js';
+import { Todo, TodoList, AddTodo, Footer } from './presentational.js';
 import { todo, todos, visibilityFilter } from './reducers.js';
 
 const { createStore, combineReducers } = Redux;
@@ -9,7 +9,7 @@ const todoApp = combineReducers({
   visibilityFilter
 });
 
-const store = createStore(todoApp);
+export const store = createStore(todoApp);
 
 const getVisibleTodos = (todos, filter) => {
   switch (filter) {

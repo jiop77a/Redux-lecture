@@ -1,5 +1,8 @@
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+/*global React*/
+import { store } from './main.js';
+
 export const Todo = ({ onClick, completed, text }) => React.createElement(
   'li',
   {
@@ -39,8 +42,35 @@ export const AddTodo = ({ onAddClick }) => {
   );
 };
 
-export const FilterLink = ({ filter, currentFilter, children, onClick }) => {
-  if (filter === currentFilter) {
+class FilterLink extends React.Component {
+  componentDidMount() {
+    this.unsubscribe = store.subscribe(() => this.forceUpdate());
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+
+  render() {
+    const props = this.props;
+    const state = store.getState();
+
+    return React.createElement(
+      Link,
+      {
+        active: props.filter === state.visibilityFilter,
+        onClick: () => store.dispatch({
+          type: 'SET_VISIBILITY_FILTER',
+          filter: props.filter
+        })
+      },
+      props.children
+    );
+  }
+}
+
+const Link = ({ active, children, onClick }) => {
+  if (active) {
     return React.createElement(
       'span',
       null,
@@ -53,14 +83,14 @@ export const FilterLink = ({ filter, currentFilter, children, onClick }) => {
       href: '#',
       onClick: e => {
         e.preventDefault();
-        onClick(filter);
+        onClick();
       }
     },
     children
   );
 };
 
-export const Footer = ({ visibilityFilter, onFilterClick }) => React.createElement(
+export const Footer = () => React.createElement(
   'p',
   null,
   'Show: ',
@@ -68,18 +98,15 @@ export const Footer = ({ visibilityFilter, onFilterClick }) => React.createEleme
   React.createElement(
     FilterLink,
     {
-      filter: 'SHOW_ALL',
-      currentFilter: visibilityFilter,
-      onClick: onFilterClick },
+      filter: 'SHOW_ALL'
+    },
     'All'
   ),
   ', ',
   React.createElement(
     FilterLink,
     {
-      filter: 'SHOW_ACTIVE',
-      currentFilter: visibilityFilter,
-      onClick: onFilterClick
+      filter: 'SHOW_ACTIVE'
     },
     'Active'
   ),
@@ -87,9 +114,7 @@ export const Footer = ({ visibilityFilter, onFilterClick }) => React.createEleme
   React.createElement(
     FilterLink,
     {
-      filter: 'SHOW_COMPLETED',
-      currentFilter: visibilityFilter,
-      onClick: onFilterClick
+      filter: 'SHOW_COMPLETED'
     },
     'Completed'
   )

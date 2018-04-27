@@ -1,3 +1,6 @@
+/*global React*/
+import { store } from './main.js';
+
 export const Todo = ({onClick, completed, text}) => (
   <li
       onClick={onClick}
@@ -36,8 +39,39 @@ export const AddTodo = ({ onAddClick }) => {
   );
 };
 
-export const FilterLink = ({ filter, currentFilter, children, onClick }) => {
-  if (filter === currentFilter) {
+class FilterLink extends React.Component {
+  componentDidMount() {
+    this.unsubscribe = store.subscribe(() => 
+      this.forceUpdate()
+    );
+  }
+
+  componentWillUnmount(){
+    this.unsubscribe();
+  }
+
+  render() {
+    const props = this.props;
+    const state = store.getState();
+
+    return (
+      <Link
+        active = { props.filter === state.visibilityFilter }
+        onClick = {() =>
+          store.dispatch({
+            type: 'SET_VISIBILITY_FILTER',
+            filter: props.filter
+          })
+        }
+      >
+        {props.children}
+      </Link>
+    );
+  }
+}
+
+const Link = ({ active, children, onClick }) => {
+  if (active) {
     return <span>{children}</span>;
   }
   return (
@@ -45,7 +79,7 @@ export const FilterLink = ({ filter, currentFilter, children, onClick }) => {
       href='#'
       onClick={e => {
         e.preventDefault();
-        onClick(filter);
+        onClick();
       }}
     >
       {children}
@@ -53,24 +87,19 @@ export const FilterLink = ({ filter, currentFilter, children, onClick }) => {
   );
 };
 
-export const Footer = ({ visibilityFilter, onFilterClick }) => (
+export const Footer = () => (
   <p>
     Show: {' '}
     <FilterLink
       filter='SHOW_ALL'
-      currentFilter={visibilityFilter}
-      onClick={onFilterClick}>All</FilterLink>
+      >All</FilterLink>
     {', '}
     <FilterLink
       filter='SHOW_ACTIVE'
-      currentFilter={visibilityFilter}
-      onClick={onFilterClick}
       >Active</FilterLink>
     {', '}
     <FilterLink
       filter='SHOW_COMPLETED'
-      currentFilter={visibilityFilter}
-      onClick={onFilterClick}
       >Completed</FilterLink>
   </p>
 );
