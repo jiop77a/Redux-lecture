@@ -7,13 +7,47 @@ export const Todo = ({ onClick, completed, text }) => React.createElement(
   'li',
   {
     onClick: onClick,
-    style: {
-      textDecoration: completed ? 'line-through' : 'none'
-    } },
+    style: { textDecoration: completed ? 'line-through' : 'none' }
+  },
   text
 );
 
-export const TodoList = ({ todos, onTodoClick }) => React.createElement(
+const getVisibleTodos = (todos, filter) => {
+  switch (filter) {
+    case 'SHOW_ALL':
+      return todos;
+    case 'SHOW_COMPLETED':
+      return todos.filter(t => t.completed);
+    case 'SHOW_ACTIVE':
+      return todos.filter(t => !t.completed);
+  }
+};
+
+export class VisibleTodoList extends React.Component {
+
+  componentDidMount() {
+    this.unsubscribe = store.subscribe(() => this.forceUpdate());
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+
+  render() {
+    const props = this.props;
+    const state = store.getState();
+
+    return React.createElement(TodoList, {
+      todos: getVisibleTodos(state.todos, state.visibilityFilter),
+      onTodoClick: id => store.dispatch({
+        type: 'TOGGLE_TODO',
+        id
+      })
+    });
+  }
+}
+
+const TodoList = ({ todos, onTodoClick }) => React.createElement(
   'ul',
   null,
   todos.map(todo => React.createElement(Todo, _extends({
@@ -23,8 +57,10 @@ export const TodoList = ({ todos, onTodoClick }) => React.createElement(
   })))
 );
 
-export const AddTodo = ({ onAddClick }) => {
+let nextTodoId = 0;
+export const AddTodo = () => {
   let input;
+
   return React.createElement(
     'div',
     null,
@@ -34,7 +70,11 @@ export const AddTodo = ({ onAddClick }) => {
     React.createElement(
       'button',
       { onClick: () => {
-          onAddClick(input.value);
+          store.dispatch({
+            type: 'ADD_TODO',
+            id: nextTodoId++,
+            text: input.value
+          });
           input.value = '';
         } },
       'Add Todo'

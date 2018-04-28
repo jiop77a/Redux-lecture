@@ -4,14 +4,59 @@ import { store } from './main.js';
 export const Todo = ({onClick, completed, text}) => (
   <li
       onClick={onClick}
-      style={{
-        textDecoration: completed ? 'line-through' : 'none'
-      }}>
+      style={{textDecoration: completed ? 'line-through' : 'none'}}
+      >
     {text}
   </li>
 );
 
-export const TodoList = ({todos, onTodoClick}) => (
+const getVisibleTodos = (todos, filter) => {
+  switch (filter) {
+    case 'SHOW_ALL':
+      return todos;
+    case 'SHOW_COMPLETED':
+      return todos.filter(t => t.completed);
+    case 'SHOW_ACTIVE':
+      return todos.filter(t => !t.completed);
+  }
+};
+
+export class VisibleTodoList extends React.Component {
+
+  componentDidMount() {
+    this.unsubscribe = store.subscribe(() =>
+      this.forceUpdate()
+    );
+  }
+
+  componentWillUnmount(){
+    this.unsubscribe();
+  }
+
+  render() {
+    const props = this.props;
+    const state = store.getState();
+
+    return (
+      <TodoList
+        todos={
+          getVisibleTodos(
+            state.todos,
+            state.visibilityFilter
+          )
+        }
+        onTodoClick={id =>
+          store.dispatch({
+            type: 'TOGGLE_TODO',
+            id
+          })
+        }
+      />
+    );
+  }
+}
+
+const TodoList = ({todos, onTodoClick}) => (
   <ul>
     {todos.map(todo =>
       <Todo
@@ -23,15 +68,21 @@ export const TodoList = ({todos, onTodoClick}) => (
   </ul>
 );
 
-export const AddTodo = ({ onAddClick }) => {
+let nextTodoId = 0;
+export const AddTodo = () => {
   let input;
+  
   return (
     <div>
       <input ref={node => {
         input = node;
       }} />
       <button onClick = {() => {
-        onAddClick(input.value);
+        store.dispatch({
+          type: 'ADD_TODO',
+          id: nextTodoId++,
+          text: input.value
+        });
         input.value = '';
       }}>Add Todo
       </button>
@@ -41,7 +92,7 @@ export const AddTodo = ({ onAddClick }) => {
 
 class FilterLink extends React.Component {
   componentDidMount() {
-    this.unsubscribe = store.subscribe(() => 
+    this.unsubscribe = store.subscribe(() =>
       this.forceUpdate()
     );
   }
