@@ -1,7 +1,7 @@
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 /*global React*/
-import { store } from './main.js';
+// import { store } from './main.js';
 
 export const Todo = ({ onClick, completed, text }) => React.createElement(
   'li',
@@ -26,6 +26,7 @@ const getVisibleTodos = (todos, filter) => {
 export class VisibleTodoList extends React.Component {
 
   componentDidMount() {
+    const { store } = this.props;
     this.unsubscribe = store.subscribe(() => this.forceUpdate());
   }
 
@@ -35,6 +36,7 @@ export class VisibleTodoList extends React.Component {
 
   render() {
     const props = this.props;
+    const { store } = this.props;
     const state = store.getState();
 
     return React.createElement(TodoList, {
@@ -58,7 +60,7 @@ const TodoList = ({ todos, onTodoClick }) => React.createElement(
 );
 
 let nextTodoId = 0;
-export const AddTodo = () => {
+export const AddTodo = ({ store }) => {
   let input;
 
   return React.createElement(
@@ -84,6 +86,7 @@ export const AddTodo = () => {
 
 class FilterLink extends React.Component {
   componentDidMount() {
+    const { store } = this.props;
     this.unsubscribe = store.subscribe(() => this.forceUpdate());
   }
 
@@ -93,6 +96,7 @@ class FilterLink extends React.Component {
 
   render() {
     const props = this.props;
+    const { store } = this.props;
     const state = store.getState();
 
     return React.createElement(
@@ -130,7 +134,7 @@ const Link = ({ active, children, onClick }) => {
   );
 };
 
-export const Footer = () => React.createElement(
+export const Footer = ({ store }) => React.createElement(
   'p',
   null,
   'Show: ',
@@ -138,6 +142,7 @@ export const Footer = () => React.createElement(
   React.createElement(
     FilterLink,
     {
+      store: store,
       filter: 'SHOW_ALL'
     },
     'All'
@@ -146,6 +151,7 @@ export const Footer = () => React.createElement(
   React.createElement(
     FilterLink,
     {
+      store: store,
       filter: 'SHOW_ACTIVE'
     },
     'Active'
@@ -154,6 +160,7 @@ export const Footer = () => React.createElement(
   React.createElement(
     FilterLink,
     {
+      store: store,
       filter: 'SHOW_COMPLETED'
     },
     'Completed'

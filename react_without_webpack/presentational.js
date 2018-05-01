@@ -1,5 +1,5 @@
 /*global React*/
-import { store } from './main.js';
+// import { store } from './main.js';
 
 export const Todo = ({onClick, completed, text}) => (
   <li
@@ -24,6 +24,7 @@ const getVisibleTodos = (todos, filter) => {
 export class VisibleTodoList extends React.Component {
 
   componentDidMount() {
+    const { store } = this.props;
     this.unsubscribe = store.subscribe(() =>
       this.forceUpdate()
     );
@@ -35,6 +36,7 @@ export class VisibleTodoList extends React.Component {
 
   render() {
     const props = this.props;
+    const { store } = this.props;
     const state = store.getState();
 
     return (
@@ -69,9 +71,9 @@ const TodoList = ({todos, onTodoClick}) => (
 );
 
 let nextTodoId = 0;
-export const AddTodo = () => {
+export const AddTodo = ({ store }) => {
   let input;
-  
+
   return (
     <div>
       <input ref={node => {
@@ -92,6 +94,7 @@ export const AddTodo = () => {
 
 class FilterLink extends React.Component {
   componentDidMount() {
+    const { store } = this.props;
     this.unsubscribe = store.subscribe(() =>
       this.forceUpdate()
     );
@@ -103,6 +106,7 @@ class FilterLink extends React.Component {
 
   render() {
     const props = this.props;
+    const { store } = this.props;
     const state = store.getState();
 
     return (
@@ -138,18 +142,21 @@ const Link = ({ active, children, onClick }) => {
   );
 };
 
-export const Footer = () => (
+export const Footer = ({ store }) => (
   <p>
     Show: {' '}
     <FilterLink
+      store={store}
       filter='SHOW_ALL'
       >All</FilterLink>
     {', '}
     <FilterLink
+      store={store}
       filter='SHOW_ACTIVE'
       >Active</FilterLink>
     {', '}
     <FilterLink
+      store={store}
       filter='SHOW_COMPLETED'
       >Completed</FilterLink>
   </p>

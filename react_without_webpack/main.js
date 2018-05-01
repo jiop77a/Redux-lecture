@@ -9,19 +9,18 @@ const todoApp = combineReducers({
   visibilityFilter
 });
 
-export const store = createStore(todoApp);
 
 
-const TodoApp = () => (
+const TodoApp = ({store}) => (
   <div>
-    <AddTodo/>
-    <VisibleTodoList/>
-    <Footer/>
+    <AddTodo store={store}/>
+    <VisibleTodoList store={store}/>
+    <Footer store={store}/>
   </div>
 );
 
 
 ReactDOM.render(
-  <TodoApp />,
+  <TodoApp store={createStore(todoApp)} />,
   document.getElementById('root')
 );
