@@ -1,4 +1,4 @@
-/*global React*/
+/* global React, PropTypes */
 // import { store } from './main.js';
 
 export const Todo = ({onClick, completed, text}) => (

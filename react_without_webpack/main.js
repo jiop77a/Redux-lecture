@@ -1,22 +1,23 @@
-/* global React, ReactDOM, Redux */
+/* global React, ReactDOM, Redux, ReactRedux */
 import {AddTodo, Footer, VisibleTodoList} from './presentational.js';
 import {todos, visibilityFilter} from './reducers.js';
 
-class Provider extends React.Component {
-  getChildContext() {
-    return {
-      store: this.props.store
-    };
-  }
-
-  render(){
-    return this.props.children;
-  }
-}
-
-Provider.childContextTypes = {
-  store: PropTypes.object
-};
+const { Provider } = ReactRedux;
+// class Provider extends React.Component {
+//   getChildContext() {
+//     return {
+//       store: this.props.store
+//     };
+//   }
+//
+//   render(){
+//     return this.props.children;
+//   }
+// }
+//
+// Provider.childContextTypes = {
+//   store: PropTypes.object
+// };
 
 
 const { createStore, combineReducers } = Redux;
