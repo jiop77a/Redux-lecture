@@ -2,6 +2,23 @@
 import {AddTodo, Footer, VisibleTodoList} from './presentational.js';
 import {todos, visibilityFilter} from './reducers.js';
 
+class Provider extends React.Component {
+  getChildContext() {
+    return {
+      store: this.props.store
+    };
+  }
+
+  render(){
+    return this.props.children;
+  }
+}
+
+Provider.childContextTypes = {
+  store: PropTypes.object
+};
+
+
 const { createStore, combineReducers } = Redux;
 
 const todoApp = combineReducers({
@@ -9,18 +26,18 @@ const todoApp = combineReducers({
   visibilityFilter
 });
 
-
-
-const TodoApp = ({store}) => (
+const TodoApp = () => (
   <div>
-    <AddTodo store={store}/>
-    <VisibleTodoList store={store}/>
-    <Footer store={store}/>
+    <AddTodo/>
+    <VisibleTodoList />
+    <Footer />
   </div>
 );
 
 
 ReactDOM.render(
-  <TodoApp store={createStore(todoApp)} />,
+  <Provider store={createStore(todoApp)}>
+    <TodoApp/>
+  </Provider>,
   document.getElementById('root')
 );

@@ -24,7 +24,7 @@ const getVisibleTodos = (todos, filter) => {
 export class VisibleTodoList extends React.Component {
 
   componentDidMount() {
-    const { store } = this.props;
+    const { store } = this.context;
     this.unsubscribe = store.subscribe(() =>
       this.forceUpdate()
     );
@@ -36,7 +36,7 @@ export class VisibleTodoList extends React.Component {
 
   render() {
     const props = this.props;
-    const { store } = this.props;
+    const { store } = this.context;
     const state = store.getState();
 
     return (
@@ -57,6 +57,9 @@ export class VisibleTodoList extends React.Component {
     );
   }
 }
+VisibleTodoList.contextTypes = {
+  store: PropTypes.object
+};
 
 const TodoList = ({todos, onTodoClick}) => (
   <ul>
@@ -71,7 +74,7 @@ const TodoList = ({todos, onTodoClick}) => (
 );
 
 let nextTodoId = 0;
-export const AddTodo = ({ store }) => {
+export const AddTodo = (props, { store }) => {
   let input;
 
   return (
@@ -91,10 +94,13 @@ export const AddTodo = ({ store }) => {
     </div>
   );
 };
+AddTodo.contextTypes = {
+  store: PropTypes.object
+};
 
 class FilterLink extends React.Component {
   componentDidMount() {
-    const { store } = this.props;
+    const { store } = this.context;
     this.unsubscribe = store.subscribe(() =>
       this.forceUpdate()
     );
@@ -106,7 +112,7 @@ class FilterLink extends React.Component {
 
   render() {
     const props = this.props;
-    const { store } = this.props;
+    const { store } = this.context;
     const state = store.getState();
 
     return (
@@ -124,6 +130,9 @@ class FilterLink extends React.Component {
     );
   }
 }
+FilterLink.contextTypes = {
+  store: PropTypes.object
+};
 
 const Link = ({ active, children, onClick }) => {
   if (active) {
@@ -142,21 +151,18 @@ const Link = ({ active, children, onClick }) => {
   );
 };
 
-export const Footer = ({ store }) => (
+export const Footer = () => (
   <p>
     Show: {' '}
     <FilterLink
-      store={store}
       filter='SHOW_ALL'
       >All</FilterLink>
     {', '}
     <FilterLink
-      store={store}
       filter='SHOW_ACTIVE'
       >Active</FilterLink>
     {', '}
     <FilterLink
-      store={store}
       filter='SHOW_COMPLETED'
       >Completed</FilterLink>
   </p>
