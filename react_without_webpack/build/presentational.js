@@ -1,6 +1,6 @@
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-/* global React, PropTypes */
+/* global React, PropTypes, ReactRedux */
 // import { store } from './main.js';
 
 export const Todo = ({ onClick, completed, text }) => React.createElement(
@@ -23,33 +23,21 @@ const getVisibleTodos = (todos, filter) => {
   }
 };
 
-export class VisibleTodoList extends React.Component {
+const mapStateToProps = state => {
+  return {
+    todos: getVisibleTodos(state.todos, state.visibilityFilter)
+  };
+};
 
-  componentDidMount() {
-    const { store } = this.context;
-    this.unsubscribe = store.subscribe(() => this.forceUpdate());
-  }
-
-  componentWillUnmount() {
-    this.unsubscribe();
-  }
-
-  render() {
-    const props = this.props;
-    const { store } = this.context;
-    const state = store.getState();
-
-    return React.createElement(TodoList, {
-      todos: getVisibleTodos(state.todos, state.visibilityFilter),
-      onTodoClick: id => store.dispatch({
+const mapDispatchToProps = dispatch => {
+  return {
+    onTodoClick: id => {
+      dispatch({
         type: 'TOGGLE_TODO',
         id
-      })
-    });
-  }
-}
-VisibleTodoList.contextTypes = {
-  store: PropTypes.object
+      });
+    }
+  };
 };
 
 const TodoList = ({ todos, onTodoClick }) => React.createElement(
@@ -61,6 +49,44 @@ const TodoList = ({ todos, onTodoClick }) => React.createElement(
     onClick: () => onTodoClick(todo.id)
   })))
 );
+
+const { connect } = ReactRedux;
+
+export const VisibleTodoList = connect(mapStateToProps, mapDispatchToProps)(TodoList);
+
+// export class VisibleTodoList extends React.Component {
+//
+//   componentDidMount() {
+//     const { store } = this.context;
+//     this.unsubscribe = store.subscribe(() =>
+//       this.forceUpdate()
+//     );
+//   }
+//
+//   componentWillUnmount(){
+//     this.unsubscribe();
+//   }
+//
+//   render() {
+//     const props = this.props;
+//     const { store } = this.context;
+//     const state = store.getState();
+//
+//     return (
+//       <TodoList
+//         todos={
+//
+//         }
+//         onTodoClick={
+//         }
+//       />
+//     );
+//   }
+// }
+// VisibleTodoList.contextTypes = {
+//   store: PropTypes.object
+// };
+
 
 let nextTodoId = 0;
 export const AddTodo = (props, { store }) => {

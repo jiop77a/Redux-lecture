@@ -3,6 +3,7 @@ import { AddTodo, Footer, VisibleTodoList } from './presentational.js';
 import { todos, visibilityFilter } from './reducers.js';
 
 const { Provider } = ReactRedux;
+
 // class Provider extends React.Component {
 //   getChildContext() {
 //     return {
