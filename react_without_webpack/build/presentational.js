@@ -115,37 +115,18 @@ const AddTodoAdvanced = ({ dispatch }) => {
 
 export const AddTodo = connect()(AddTodoAdvanced);
 
-class FilterLink extends React.Component {
-  componentDidMount() {
-    const { store } = this.context;
-    this.unsubscribe = store.subscribe(() => this.forceUpdate());
-  }
+const mapStateToLinkProps = (state, ownProps) => ({
+  active: ownProps.filter === state.visibilityFilter
+});
 
-  componentWillUnmount() {
-    this.unsubscribe();
+const mapDispatchToLinkProps = (dispatch, ownProps) => ({
+  onClick: () => {
+    dispatch({
+      type: 'SET_VISIBILITY_FILTER',
+      filter: ownProps.filter
+    });
   }
-
-  render() {
-    const props = this.props;
-    const { store } = this.context;
-    const state = store.getState();
-
-    return React.createElement(
-      Link,
-      {
-        active: props.filter === state.visibilityFilter,
-        onClick: () => store.dispatch({
-          type: 'SET_VISIBILITY_FILTER',
-          filter: props.filter
-        })
-      },
-      props.children
-    );
-  }
-}
-FilterLink.contextTypes = {
-  store: PropTypes.object
-};
+});
 
 const Link = ({ active, children, onClick }) => {
   if (active) {
@@ -167,6 +148,45 @@ const Link = ({ active, children, onClick }) => {
     children
   );
 };
+
+const FilterLink = connect(mapStateToLinkProps, mapDispatchToLinkProps)(Link);
+
+// class FilterLink extends React.Component {
+//   componentDidMount() {
+//     const { store } = this.context;
+//     this.unsubscribe = store.subscribe(() =>
+//       this.forceUpdate()
+//     );
+//   }
+//
+//   componentWillUnmount(){
+//     this.unsubscribe();
+//   }
+//
+//   render() {
+//     const props = this.props;
+//     const { store } = this.context;
+//     const state = store.getState();
+//
+//     return (
+//       <Link
+//         active = { props.filter === state.visibilityFilter }
+//         onClick = {() =>
+//           store.dispatch({
+//             type: 'SET_VISIBILITY_FILTER',
+//             filter: props.filter
+//           })
+//         }
+//       >
+//         {props.children}
+//       </Link>
+//     );
+//   }
+// }
+// FilterLink.contextTypes = {
+//   store: PropTypes.object
+// };
+
 
 export const Footer = () => React.createElement(
   'p',
