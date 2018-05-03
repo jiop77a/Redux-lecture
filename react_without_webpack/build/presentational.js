@@ -2,6 +2,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 /* global React, PropTypes, ReactRedux */
 // import { store } from './main.js';
+import { addTodo, setVizFilter, toggleTodo } from './action_creators.js';
 
 export const Todo = ({ onClick, completed, text }) => React.createElement(
   'li',
@@ -32,10 +33,7 @@ const mapStateToTodoListProps = state => {
 const mapDispatchToTodoListProps = dispatch => {
   return {
     onTodoClick: id => {
-      dispatch({
-        type: 'TOGGLE_TODO',
-        id
-      });
+      dispatch(toggleTodo(id));
     }
   };
 };
@@ -54,41 +52,6 @@ const { connect } = ReactRedux;
 
 export const VisibleTodoList = connect(mapStateToTodoListProps, mapDispatchToTodoListProps)(TodoList);
 
-// export class VisibleTodoList extends React.Component {
-//
-//   componentDidMount() {
-//     const { store } = this.context;
-//     this.unsubscribe = store.subscribe(() =>
-//       this.forceUpdate()
-//     );
-//   }
-//
-//   componentWillUnmount(){
-//     this.unsubscribe();
-//   }
-//
-//   render() {
-//     const props = this.props;
-//     const { store } = this.context;
-//     const state = store.getState();
-//
-//     return (
-//       <TodoList
-//         todos={
-//
-//         }
-//         onTodoClick={
-//         }
-//       />
-//     );
-//   }
-// }
-// VisibleTodoList.contextTypes = {
-//   store: PropTypes.object
-// };
-
-
-let nextTodoId = 0;
 const AddTodoAdvanced = ({ dispatch }) => {
   let input;
 
@@ -101,11 +64,7 @@ const AddTodoAdvanced = ({ dispatch }) => {
     React.createElement(
       'button',
       { onClick: () => {
-          dispatch({
-            type: 'ADD_TODO',
-            id: nextTodoId++,
-            text: input.value
-          });
+          dispatch(addTodo(input.value));
           input.value = '';
         } },
       'Add Todo'
@@ -121,10 +80,7 @@ const mapStateToLinkProps = (state, ownProps) => ({
 
 const mapDispatchToLinkProps = (dispatch, ownProps) => ({
   onClick: () => {
-    dispatch({
-      type: 'SET_VISIBILITY_FILTER',
-      filter: ownProps.filter
-    });
+    dispatch(setVizFilter(ownProps.filter));
   }
 });
 
@@ -150,43 +106,6 @@ const Link = ({ active, children, onClick }) => {
 };
 
 const FilterLink = connect(mapStateToLinkProps, mapDispatchToLinkProps)(Link);
-
-// class FilterLink extends React.Component {
-//   componentDidMount() {
-//     const { store } = this.context;
-//     this.unsubscribe = store.subscribe(() =>
-//       this.forceUpdate()
-//     );
-//   }
-//
-//   componentWillUnmount(){
-//     this.unsubscribe();
-//   }
-//
-//   render() {
-//     const props = this.props;
-//     const { store } = this.context;
-//     const state = store.getState();
-//
-//     return (
-//       <Link
-//         active = { props.filter === state.visibilityFilter }
-//         onClick = {() =>
-//           store.dispatch({
-//             type: 'SET_VISIBILITY_FILTER',
-//             filter: props.filter
-//           })
-//         }
-//       >
-//         {props.children}
-//       </Link>
-//     );
-//   }
-// }
-// FilterLink.contextTypes = {
-//   store: PropTypes.object
-// };
-
 
 export const Footer = () => React.createElement(
   'p',
