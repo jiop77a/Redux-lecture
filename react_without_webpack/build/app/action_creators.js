@@ -1,8 +1,8 @@
+/*global uuidv4*/
 
-let nextTodoId = 0;
 export const addTodo = text => ({
   type: 'ADD_TODO',
-  id: nextTodoId++,
+  id: uuidv4(),
   text
 });
 
@@ -15,4 +15,4 @@ export const toggleTodo = id => ({
   type: 'TOGGLE_TODO',
   id
 });
-//# sourceMappingURL=../action_creators.js.map
+//# sourceMappingURL=../../app/action_creators.js.map

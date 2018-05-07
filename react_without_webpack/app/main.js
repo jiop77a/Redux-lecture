@@ -1,7 +1,7 @@
 /* global React, ReactDOM, Redux, ReactRedux */
-import { AddTodo, Footer, VisibleTodoList } from './presentational.js';
-import { todos, visibilityFilter } from './reducers.js';
-import { loadState, saveState } from './localStorage.js';
+import {AddTodo, Footer, VisibleTodoList} from './presentational.js';
+import {todos, visibilityFilter} from './reducers.js';
+import {loadState, saveState} from './localStorage.js';
 
 const { Provider } = ReactRedux;
 
@@ -29,12 +29,12 @@ const todoApp = combineReducers({
   visibilityFilter
 });
 
-const TodoApp = () => React.createElement(
-  'div',
-  null,
-  React.createElement(AddTodo, null),
-  React.createElement(VisibleTodoList, null),
-  React.createElement(Footer, null)
+const TodoApp = () => (
+  <div>
+    <AddTodo/>
+    <VisibleTodoList />
+    <Footer />
+  </div>
 );
 
 const persistedState = loadState();
@@ -50,14 +50,16 @@ const persistedState = loadState();
 const store = createStore(todoApp, persistedState);
 
 store.subscribe(() => {
-  saveState(store.getState());
+  saveState({
+    todos: store.getState().todos
+  });
 });
 
 console.log(store.getState());
 
-ReactDOM.render(React.createElement(
-  Provider,
-  { store: store },
-  React.createElement(TodoApp, null)
-), document.getElementById('root'));
-//# sourceMappingURL=../main.js.map
+ReactDOM.render(
+  <Provider store={store}>
+    <TodoApp/>
+  </Provider>,
+  document.getElementById('root')
+);
