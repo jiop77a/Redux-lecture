@@ -1,7 +1,9 @@
-/* global React, ReactDOM, Redux, ReactRedux */
+/* global React, ReactDOM, Redux, ReactRedux _*/
 import {AddTodo, Footer, VisibleTodoList} from './presentational.js';
 import {todos, visibilityFilter} from './reducers.js';
 import {loadState, saveState} from './localStorage.js';
+
+
 
 const { Provider } = ReactRedux;
 
@@ -49,11 +51,11 @@ const persistedState = loadState();
 
 const store = createStore(todoApp, persistedState);
 
-store.subscribe(() => {
+store.subscribe(_.throttle(() => {
   saveState({
     todos: store.getState().todos
   });
-});
+}, 1000));
 
 console.log(store.getState());
 

@@ -18,4 +18,4 @@ export const saveState = state => {
     // Ignore write errors
   }
 };
-//# sourceMappingURL=../../app/localStorage.js.map
+//# sourceMappingURL=../localStorage.js.map
