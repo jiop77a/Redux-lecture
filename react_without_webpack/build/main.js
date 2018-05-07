@@ -36,9 +36,21 @@ const TodoApp = () => React.createElement(
   React.createElement(Footer, null)
 );
 
+const persistedState = {
+  todos: [{
+    id: '0',
+    text: 'Welcome back!',
+    completed: false
+  }]
+};
+
+const store = createStore(todoApp, persistedState);
+
+console.log(store.getState());
+
 ReactDOM.render(React.createElement(
   Provider,
-  { store: createStore(todoApp) },
+  { store: store },
   React.createElement(TodoApp, null)
 ), document.getElementById('root'));
 //# sourceMappingURL=../main.js.map
