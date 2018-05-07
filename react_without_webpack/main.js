@@ -1,6 +1,7 @@
 /* global React, ReactDOM, Redux, ReactRedux */
 import {AddTodo, Footer, VisibleTodoList} from './presentational.js';
 import {todos, visibilityFilter} from './reducers.js';
+import {loadState, saveState} from './localStorage.js';
 
 const { Provider } = ReactRedux;
 
@@ -36,16 +37,21 @@ const TodoApp = () => (
   </div>
 );
 
-const persistedState = {
-  todos: [{
-      id: '0',
-      text: 'Welcome back!',
-      completed: false
-  }]
-};
+const persistedState = loadState();
+
+// {
+//   todos: [{
+//       id: '0',
+//       text: 'Welcome back!',
+//       completed: false
+//   }]
+// };
 
 const store = createStore(todoApp, persistedState);
 
+store.subscribe(() => {
+  saveState(store.getState());
+});
 
 console.log(store.getState());
 
