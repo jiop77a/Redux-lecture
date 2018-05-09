@@ -1,6 +1,8 @@
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-export const todo = (state, action) => {
+/* global React, ReactDOM, Redux, ReactRedux _*/
+
+const todo = (state, action) => {
   switch (action.type) {
     case 'ADD_TODO':
       return {
@@ -20,7 +22,7 @@ export const todo = (state, action) => {
   }
 };
 
-export const todos = (state = [], action) => {
+const todos = (state = [], action) => {
   switch (action.type) {
     case 'ADD_TODO':
       return [...state, todo(undefined, action)];
@@ -32,7 +34,7 @@ export const todos = (state = [], action) => {
   }
 };
 
-export const visibilityFilter = (state = 'SHOW_ALL', action) => {
+const visibilityFilter = (state = 'SHOW_ALL', action) => {
   switch (action.type) {
     case 'SET_VISIBILITY_FILTER':
       return action.filter;
@@ -40,4 +42,11 @@ export const visibilityFilter = (state = 'SHOW_ALL', action) => {
       return state;
   }
 };
+
+const { combineReducers } = Redux;
+
+export const todoApp = combineReducers({
+  todos,
+  visibilityFilter
+});
 //# sourceMappingURL=../reducers.js.map
