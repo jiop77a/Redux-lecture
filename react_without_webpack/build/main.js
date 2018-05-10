@@ -1,4 +1,4 @@
-/* global React, ReactDOM, Redux, ReactRedux _*/
+/* global React, ReactDOM, Redux, ReactRedux, ReactRouterDOM, _*/
 
 import { configureStore } from './configureStore.js';
 import Root from './Root.js';

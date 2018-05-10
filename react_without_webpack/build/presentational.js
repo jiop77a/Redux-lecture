@@ -4,7 +4,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 // import { store } from './main.js';
 import { addTodo, setVizFilter, toggleTodo } from './action_creators.js';
 
-export const Todo = ({ onClick, completed, text }) => React.createElement(
+const Todo = ({ onClick, completed, text }) => React.createElement(
   'li',
   {
     onClick: onClick,

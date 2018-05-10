@@ -2,7 +2,7 @@
 // import { store } from './main.js';
 import { addTodo, setVizFilter, toggleTodo } from './action_creators.js';
 
-export const Todo = ({onClick, completed, text}) => (
+const Todo = ({onClick, completed, text}) => (
   <li
       onClick={onClick}
       style={{textDecoration: completed ? 'line-through' : 'none'}}

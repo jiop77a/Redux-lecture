@@ -1,7 +1,8 @@
-/* global React, ReactDOM, Redux, ReactRedux _*/
+/* global React, ReactDOM, Redux, ReactRedux, ReactRouterDOM, _*/
 import {AddTodo, Footer, VisibleTodoList} from './presentational.js';
 
 const { Provider } = ReactRedux;
+const { BrowserRouter, Route } = ReactRouterDOM;
 
 // class Provider extends React.Component {
 //   getChildContext() {
@@ -29,7 +30,10 @@ const TodoApp = () => (
 
 const Root = ({store }) => (
   <Provider store={store}>
-    <TodoApp/>
+    <BrowserRouter>
+      <Route path='/' component={TodoApp}>
+      </Route>
+    </BrowserRouter>
   </Provider>
 );
 
