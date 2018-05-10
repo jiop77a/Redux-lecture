@@ -2,7 +2,7 @@
 import {AddTodo, Footer, VisibleTodoList} from './presentational.js';
 
 const { Provider } = ReactRedux;
-const { BrowserRouter, Route } = ReactRouterDOM;
+const { BrowserRouter, Route, withRouter } = ReactRouterDOM;
 
 // class Provider extends React.Component {
 //   getChildContext() {
@@ -20,18 +20,20 @@ const { BrowserRouter, Route } = ReactRouterDOM;
 //   store: PropTypes.object
 // };
 
-const TodoApp = () => (
+const TodoApp = ({match}) => (
   <div>
     <AddTodo/>
-    <VisibleTodoList />
+    <VisibleTodoList filter={match.params.filter || 'all'}/>
     <Footer />
   </div>
 );
 
+// const App = withRouter(TodoApp);
+
 const Root = ({store }) => (
   <Provider store={store}>
     <BrowserRouter>
-      <Route path='/' component={TodoApp}>
+      <Route path='/:filter?' component={TodoApp}>
       </Route>
     </BrowserRouter>
   </Provider>

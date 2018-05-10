@@ -1,6 +1,6 @@
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-/* global React, PropTypes, ReactRedux */
+/* global React, PropTypes, ReactRedux, ReactRouterDOM */
 // import { store } from './main.js';
 import { addTodo, setVizFilter, toggleTodo } from './action_creators.js';
 
@@ -15,17 +15,17 @@ const Todo = ({ onClick, completed, text }) => React.createElement(
 
 const getVisibleTodos = (todos, filter) => {
   switch (filter) {
-    case 'SHOW_ALL':
+    case 'all':
       return todos;
-    case 'SHOW_COMPLETED':
+    case 'completed':
       return todos.filter(t => t.completed);
-    case 'SHOW_ACTIVE':
+    case 'active':
       return todos.filter(t => !t.completed);
   }
 };
 
-const mapStateToTodoListProps = state => ({
-  todos: getVisibleTodos(state.todos, state.visibilityFilter)
+const mapStateToTodoListProps = (state, ownProps) => ({
+  todos: getVisibleTodos(state.todos, ownProps.filter)
 });
 
 const mapDispatchToTodoListProps = dispatch => ({
@@ -80,28 +80,39 @@ const mapDispatchToLinkProps = (dispatch, ownProps) => ({
   }
 });
 
-const Link = ({ active, children, onClick }) => {
-  if (active) {
-    return React.createElement(
-      'span',
-      null,
-      children
-    );
-  }
-  return React.createElement(
-    'a',
-    {
-      href: '#',
-      onClick: e => {
-        e.preventDefault();
-        onClick();
-      }
-    },
-    children
-  );
-};
+// const Link = ({ active, children, onClick }) => {
+//   if (active) {
+//     return <span>{children}</span>;
+//   }
+//   return (
+//     <a
+//       href='#'
+//       onClick={e => {
+//         e.preventDefault();
+//         onClick();
+//       }}
+//       >
+//         {children}
+//       </a>
+//     );
+//   };
+//
+// const FilterLink =  connect(mapStateToLinkProps, mapDispatchToLinkProps)(Link);
 
-const FilterLink = connect(mapStateToLinkProps, mapDispatchToLinkProps)(Link);
+const { NavLink } = ReactRouterDOM;
+
+const FilterLink = ({ filter, children }) => React.createElement(
+  NavLink,
+  {
+    exact: true,
+    to: filter === 'all' ? '/' : `/${filter}`,
+    activeStyle: {
+      textDecoration: 'none',
+      color: 'black'
+    }
+  },
+  children
+);
 
 export const Footer = () => React.createElement(
   'p',
@@ -111,7 +122,7 @@ export const Footer = () => React.createElement(
   React.createElement(
     FilterLink,
     {
-      filter: 'SHOW_ALL'
+      filter: 'all'
     },
     'All'
   ),
@@ -119,7 +130,7 @@ export const Footer = () => React.createElement(
   React.createElement(
     FilterLink,
     {
-      filter: 'SHOW_ACTIVE'
+      filter: 'active'
     },
     'Active'
   ),
@@ -127,7 +138,7 @@ export const Footer = () => React.createElement(
   React.createElement(
     FilterLink,
     {
-      filter: 'SHOW_COMPLETED'
+      filter: 'completed'
     },
     'Completed'
   )

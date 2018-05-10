@@ -1,4 +1,4 @@
-/* global React, PropTypes, ReactRedux */
+/* global React, PropTypes, ReactRedux, ReactRouterDOM */
 // import { store } from './main.js';
 import { addTodo, setVizFilter, toggleTodo } from './action_creators.js';
 
@@ -13,19 +13,19 @@ const Todo = ({onClick, completed, text}) => (
 
 const getVisibleTodos = (todos, filter) => {
   switch (filter) {
-    case 'SHOW_ALL':
+    case 'all':
       return todos;
-    case 'SHOW_COMPLETED':
+    case 'completed':
       return todos.filter(t => t.completed);
-    case 'SHOW_ACTIVE':
+    case 'active':
       return todos.filter(t => !t.completed);
   }
 };
 
-const mapStateToTodoListProps = (state) => ({
+const mapStateToTodoListProps = (state, ownProps) => ({
   todos: getVisibleTodos(
     state.todos,
-    state.visibilityFilter
+    ownProps.filter
   )
 });
 
@@ -83,38 +83,51 @@ const mapDispatchToLinkProps = (dispatch, ownProps) => ({
   }
 });
 
-const Link = ({ active, children, onClick }) => {
-  if (active) {
-    return <span>{children}</span>;
-  }
-  return (
-    <a
-      href='#'
-      onClick={e => {
-        e.preventDefault();
-        onClick();
-      }}
-      >
-        {children}
-      </a>
-    );
-  };
+// const Link = ({ active, children, onClick }) => {
+//   if (active) {
+//     return <span>{children}</span>;
+//   }
+//   return (
+//     <a
+//       href='#'
+//       onClick={e => {
+//         e.preventDefault();
+//         onClick();
+//       }}
+//       >
+//         {children}
+//       </a>
+//     );
+//   };
+//
+// const FilterLink =  connect(mapStateToLinkProps, mapDispatchToLinkProps)(Link);
 
-const FilterLink =  connect(mapStateToLinkProps, mapDispatchToLinkProps)(Link);
+const { NavLink } = ReactRouterDOM;
+
+const FilterLink = ({ filter, children }) => (
+  <NavLink
+    exact
+    to={filter === 'all' ? '/' : `/${filter}`}
+    activeStyle={{
+      textDecoration: 'none',
+      color: 'black'
+    }}
+  >{children}</NavLink>
+);
 
 export const Footer = () => (
   <p>
     Show: {' '}
     <FilterLink
-      filter='SHOW_ALL'
+      filter='all'
       >All</FilterLink>
     {', '}
     <FilterLink
-      filter='SHOW_ACTIVE'
+      filter='active'
       >Active</FilterLink>
     {', '}
     <FilterLink
-      filter='SHOW_COMPLETED'
+      filter='completed'
       >Completed</FilterLink>
   </p>
 );
