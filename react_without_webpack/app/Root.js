@@ -20,10 +20,10 @@ const { BrowserRouter, Route, withRouter } = ReactRouterDOM;
 //   store: PropTypes.object
 // };
 
-const TodoApp = ({match}) => (
+const TodoApp = () => (
   <div>
     <AddTodo/>
-    <VisibleTodoList filter={match.params.filter || 'all'}/>
+    <VisibleTodoList />
     <Footer />
   </div>
 );

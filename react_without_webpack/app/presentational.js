@@ -2,6 +2,8 @@
 // import { store } from './main.js';
 import { addTodo, setVizFilter, toggleTodo } from './action_creators.js';
 
+const { NavLink, withRouter } = ReactRouterDOM;
+
 const Todo = ({onClick, completed, text}) => (
   <li
       onClick={onClick}
@@ -22,10 +24,10 @@ const getVisibleTodos = (todos, filter) => {
   }
 };
 
-const mapStateToTodoListProps = (state, ownProps) => ({
+const mapStateToTodoListProps = (state, { match }) => ({
   todos: getVisibleTodos(
     state.todos,
-    ownProps.filter
+    match.params.filter || 'all'
   )
 });
 
@@ -50,9 +52,9 @@ const TodoList = ({todos, onTodoClick}) => (
 
 const { connect } = ReactRedux;
 
-export const VisibleTodoList = connect(
+export const VisibleTodoList = withRouter(connect(
   mapStateToTodoListProps, mapDispatchToTodoListProps
-)(TodoList);
+)(TodoList));
 
 const AddTodoAdvanced = ({ dispatch }) => {
   let input;
@@ -102,7 +104,6 @@ const mapDispatchToLinkProps = (dispatch, ownProps) => ({
 //
 // const FilterLink =  connect(mapStateToLinkProps, mapDispatchToLinkProps)(Link);
 
-const { NavLink } = ReactRouterDOM;
 
 const FilterLink = ({ filter, children }) => (
   <NavLink

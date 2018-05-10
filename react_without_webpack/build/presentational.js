@@ -4,6 +4,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 // import { store } from './main.js';
 import { addTodo, setVizFilter, toggleTodo } from './action_creators.js';
 
+const { NavLink, withRouter } = ReactRouterDOM;
+
 const Todo = ({ onClick, completed, text }) => React.createElement(
   'li',
   {
@@ -24,8 +26,8 @@ const getVisibleTodos = (todos, filter) => {
   }
 };
 
-const mapStateToTodoListProps = (state, ownProps) => ({
-  todos: getVisibleTodos(state.todos, ownProps.filter)
+const mapStateToTodoListProps = (state, { match }) => ({
+  todos: getVisibleTodos(state.todos, match.params.filter || 'all')
 });
 
 const mapDispatchToTodoListProps = dispatch => ({
@@ -46,7 +48,7 @@ const TodoList = ({ todos, onTodoClick }) => React.createElement(
 
 const { connect } = ReactRedux;
 
-export const VisibleTodoList = connect(mapStateToTodoListProps, mapDispatchToTodoListProps)(TodoList);
+export const VisibleTodoList = withRouter(connect(mapStateToTodoListProps, mapDispatchToTodoListProps)(TodoList));
 
 const AddTodoAdvanced = ({ dispatch }) => {
   let input;
@@ -99,7 +101,6 @@ const mapDispatchToLinkProps = (dispatch, ownProps) => ({
 //
 // const FilterLink =  connect(mapStateToLinkProps, mapDispatchToLinkProps)(Link);
 
-const { NavLink } = ReactRouterDOM;
 
 const FilterLink = ({ filter, children }) => React.createElement(
   NavLink,
