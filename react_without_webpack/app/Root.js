@@ -33,8 +33,7 @@ const TodoApp = () => (
 const Root = ({store }) => (
   <Provider store={store}>
     <BrowserRouter>
-      <Route path='/:filter?' component={TodoApp}>
-      </Route>
+      <Route path='/:filter?' component={TodoApp}></Route>
     </BrowserRouter>
   </Provider>
 );

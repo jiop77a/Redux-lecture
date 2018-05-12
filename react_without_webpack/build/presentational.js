@@ -30,11 +30,11 @@ const mapStateToTodoListProps = (state, { match }) => ({
   todos: getVisibleTodos(state.todos, match.params.filter || 'all')
 });
 
-const mapDispatchToTodoListProps = dispatch => ({
-  onTodoClick(id) {
-    dispatch(toggleTodo(id));
-  }
-});
+// const mapDispatchToTodoListProps = (dispatch) => ({
+//     onTodoClick(id) {
+//       dispatch(toggleTodo(id));
+//     }
+// });
 
 const TodoList = ({ todos, onTodoClick }) => React.createElement(
   'ul',
@@ -48,7 +48,7 @@ const TodoList = ({ todos, onTodoClick }) => React.createElement(
 
 const { connect } = ReactRedux;
 
-export const VisibleTodoList = withRouter(connect(mapStateToTodoListProps, mapDispatchToTodoListProps)(TodoList));
+export const VisibleTodoList = withRouter(connect(mapStateToTodoListProps, { onTodoClick: toggleTodo })(TodoList));
 
 const AddTodoAdvanced = ({ dispatch }) => {
   let input;
@@ -72,15 +72,15 @@ const AddTodoAdvanced = ({ dispatch }) => {
 
 export const AddTodo = connect()(AddTodoAdvanced);
 
-const mapStateToLinkProps = (state, ownProps) => ({
-  active: ownProps.filter === state.visibilityFilter
-});
-
-const mapDispatchToLinkProps = (dispatch, ownProps) => ({
-  onClick() {
-    dispatch(setVizFilter(ownProps.filter));
-  }
-});
+// const mapStateToLinkProps = (state, ownProps) => ({
+//     active: ownProps.filter === state.visibilityFilter
+// });
+//
+// const mapDispatchToLinkProps = (dispatch, ownProps) => ({
+//   onClick() {
+//     dispatch(setVizFilter(ownProps.filter));
+//   }
+// });
 
 // const Link = ({ active, children, onClick }) => {
 //   if (active) {
