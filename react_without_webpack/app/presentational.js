@@ -1,6 +1,7 @@
 /* global React, PropTypes, ReactRedux, ReactRouterDOM */
 // import { store } from './main.js';
 import { addTodo, setVizFilter, toggleTodo } from './action_creators.js';
+import { getVisibleTodos } from './reducers.js';
 
 const { NavLink, withRouter } = ReactRouterDOM;
 
@@ -12,17 +13,6 @@ const Todo = ({onClick, completed, text}) => (
     {text}
   </li>
 );
-
-const getVisibleTodos = (todos, filter) => {
-  switch (filter) {
-    case 'all':
-      return todos;
-    case 'completed':
-      return todos.filter(t => t.completed);
-    case 'active':
-      return todos.filter(t => !t.completed);
-  }
-};
 
 const mapStateToTodoListProps = (state, { match }) => ({
   todos: getVisibleTodos(

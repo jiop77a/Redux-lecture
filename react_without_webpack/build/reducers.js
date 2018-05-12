@@ -2,6 +2,17 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 /* global React, ReactDOM, Redux, ReactRedux _*/
 
+export const getVisibleTodos = (todos, filter) => {
+  switch (filter) {
+    case 'all':
+      return todos;
+    case 'completed':
+      return todos.filter(t => t.completed);
+    case 'active':
+      return todos.filter(t => !t.completed);
+  }
+};
+
 const todo = (state, action) => {
   switch (action.type) {
     case 'ADD_TODO':
