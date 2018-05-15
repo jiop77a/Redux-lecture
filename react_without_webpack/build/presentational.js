@@ -1,9 +1,13 @@
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
 /* global React, PropTypes, ReactRedux, ReactRouterDOM */
 // import { store } from './main.js';
-import { addTodo, setVizFilter, toggleTodo } from './action_creators.js';
+import * as actions from './action_creators.js';
+import { addTodo, toggleTodo, receiveTodos } from './action_creators.js';
 import { getVisibleTodos } from './reducers.js';
+import { fetchTodos } from './fakeDatabase.js';
 
 const { NavLink, withRouter } = ReactRouterDOM;
 
@@ -16,9 +20,39 @@ const Todo = ({ onClick, completed, text }) => React.createElement(
   text
 );
 
-const mapStateToTodoListProps = (state, { match }) => ({
-  todos: getVisibleTodos(state, match.params.filter || 'all')
-});
+class VisibleTodoListAdvanced extends React.Component {
+  componentDidMount() {
+    this.fetchData();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.filter !== prevProps.filter) {
+      this.fetchData();
+    }
+  }
+
+  fetchData() {
+    const { filter, receiveTodos } = this.props;
+    fetchTodos(this.props.filter).then(todos => receiveTodos(filter, todos));
+  }
+
+  render() {
+    const _props = this.props,
+          { toggleTodo } = _props,
+          rest = _objectWithoutProperties(_props, ['toggleTodo']);
+    return React.createElement(TodoList, _extends({}, rest, {
+      onTodoClick: toggleTodo
+    }));
+  }
+}
+
+const mapStateToTodoListProps = (state, { match }) => {
+  const filter = match.params.filter || 'all';
+  return {
+    todos: getVisibleTodos(state, filter),
+    filter
+  };
+};
 
 // const mapDispatchToTodoListProps = (dispatch) => ({
 //     onTodoClick(id) {
@@ -38,7 +72,7 @@ const TodoList = ({ todos, onTodoClick }) => React.createElement(
 
 const { connect } = ReactRedux;
 
-export const VisibleTodoList = withRouter(connect(mapStateToTodoListProps, { onTodoClick: toggleTodo })(TodoList));
+export const VisibleTodoList = withRouter(connect(mapStateToTodoListProps, actions)(VisibleTodoListAdvanced));
 
 const AddTodoAdvanced = ({ dispatch }) => {
   let input;
@@ -52,7 +86,7 @@ const AddTodoAdvanced = ({ dispatch }) => {
     React.createElement(
       'button',
       { onClick: () => {
-          dispatch(addTodo(input.value));
+          dispatch(actions.addTodo(input.value));
           input.value = '';
         } },
       'Add Todo'

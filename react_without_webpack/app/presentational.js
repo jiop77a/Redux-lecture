@@ -1,7 +1,9 @@
 /* global React, PropTypes, ReactRedux, ReactRouterDOM */
 // import { store } from './main.js';
-import { addTodo, setVizFilter, toggleTodo } from './action_creators.js';
+import * as actions from './action_creators.js';
+import { addTodo, toggleTodo, receiveTodos } from './action_creators.js';
 import { getVisibleTodos } from './reducers.js';
+import { fetchTodos } from './fakeDatabase.js';
 
 const { NavLink, withRouter } = ReactRouterDOM;
 
@@ -14,12 +16,42 @@ const Todo = ({onClick, completed, text}) => (
   </li>
 );
 
-const mapStateToTodoListProps = (state, { match }) => ({
-  todos: getVisibleTodos(
-    state,
-    match.params.filter || 'all'
-  )
-});
+class VisibleTodoListAdvanced extends React.Component {
+  componentDidMount() {
+    this.fetchData();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.filter !== prevProps.filter) {
+      this.fetchData();
+    }
+  }
+
+  fetchData() {
+    const { filter, receiveTodos } = this.props;
+    fetchTodos(this.props.filter).then(todos =>
+      receiveTodos(filter, todos)
+    );
+  }
+
+  render() {
+    const {toggleTodo, ...rest} = this.props;
+    return (
+      <TodoList
+        {...rest}
+        onTodoClick={toggleTodo}
+      />
+    );
+  }
+}
+
+const mapStateToTodoListProps = (state, { match }) => {
+  const filter = match.params.filter || 'all';
+  return {
+    todos: getVisibleTodos(state, filter),
+    filter
+  };
+};
 
 
 // const mapDispatchToTodoListProps = (dispatch) => ({
@@ -44,8 +76,8 @@ const { connect } = ReactRedux;
 
 export const VisibleTodoList = withRouter(connect(
   mapStateToTodoListProps,
-  {onTodoClick: toggleTodo}
-)(TodoList));
+  actions
+)(VisibleTodoListAdvanced));
 
 const AddTodoAdvanced = ({ dispatch }) => {
   let input;
@@ -56,7 +88,7 @@ const AddTodoAdvanced = ({ dispatch }) => {
         input = node;
       }} />
       <button onClick = {() => {
-        dispatch(addTodo(input.value));
+        dispatch(actions.addTodo(input.value));
         input.value = '';
       }}>Add Todo
       </button>
