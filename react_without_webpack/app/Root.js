@@ -1,5 +1,6 @@
 /* global React, ReactDOM, Redux, ReactRedux, ReactRouterDOM, _*/
-import {AddTodo, Footer, VisibleTodoList} from './presentational.js';
+import { AddTodo, Footer, VisibleTodoList } from './presentational.js';
+import { fetchTodos } from './fakeDatabase.js';
 
 const { Provider } = ReactRedux;
 const { BrowserRouter, Route, withRouter } = ReactRouterDOM;
@@ -28,7 +29,7 @@ const TodoApp = () => (
   </div>
 );
 
-// const App = withRouter(TodoApp);
+fetchTodos('all').then(todos => console.log(todos));
 
 const Root = ({store }) => (
   <Provider store={store}>

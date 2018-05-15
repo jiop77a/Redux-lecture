@@ -1,5 +1,5 @@
 /* global React, ReactDOM, Redux, ReactRedux _*/
-import {loadState, saveState} from './localStorage.js';
+// import {loadState, saveState} from './localStorage.js';
 import {todoApp} from './reducers.js';
 
 const { createStore } = Redux;
@@ -18,17 +18,17 @@ const addLoggingToDispatch = (store) => {
 };
 
 export const configureStore = () => {
-  const persistedState = loadState();
+  // const persistedState = loadState();
 
-  const store = createStore(todoApp, persistedState);
+  const store = createStore(todoApp);
 
   store.dispatch = addLoggingToDispatch(store);
 
-  store.subscribe(_.throttle(() => {
-    saveState({
-      todos: store.getState().todos
-    });
-  }, 1000));
+  // store.subscribe(_.throttle(() => {
+  //   saveState({
+  //     todos: store.getState().todos
+  //   });
+  // }, 1000));
 
   return store;
 };
