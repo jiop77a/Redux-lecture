@@ -1,4 +1,5 @@
 /*global uuidv4*/
+import * as api from './fakeDatabase.js';
 
 export const addTodo = text => ({
   type: 'ADD_TODO',
@@ -16,9 +17,11 @@ export const toggleTodo = id => ({
   id
 });
 
-export const receiveTodos = (filter, response) => ({
+const receiveTodos = (filter, response) => ({
   type: 'RECEIVE_TODOS',
   filter,
   response
 });
+
+export const fetchTodos = filter => api.fetchTodos(filter).then(response => receiveTodos(filter, response));
 //# sourceMappingURL=../action_creators.js.map

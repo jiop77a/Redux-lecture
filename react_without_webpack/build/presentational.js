@@ -5,9 +5,7 @@ function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in ob
 /* global React, PropTypes, ReactRedux, ReactRouterDOM */
 // import { store } from './main.js';
 import * as actions from './action_creators.js';
-import { addTodo, toggleTodo, receiveTodos } from './action_creators.js';
 import { getVisibleTodos } from './reducers.js';
-import { fetchTodos } from './fakeDatabase.js';
 
 const { NavLink, withRouter } = ReactRouterDOM;
 
@@ -32,8 +30,8 @@ class VisibleTodoListAdvanced extends React.Component {
   }
 
   fetchData() {
-    const { filter, receiveTodos } = this.props;
-    fetchTodos(this.props.filter).then(todos => receiveTodos(filter, todos));
+    const { filter, fetchTodos } = this.props;
+    fetchTodos(filter);
   }
 
   render() {
