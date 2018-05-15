@@ -16,7 +16,7 @@ const Todo = ({onClick, completed, text}) => (
 
 const mapStateToTodoListProps = (state, { match }) => ({
   todos: getVisibleTodos(
-    state.todos,
+    state,
     match.params.filter || 'all'
   )
 });

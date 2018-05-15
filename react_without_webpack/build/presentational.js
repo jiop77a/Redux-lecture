@@ -17,7 +17,7 @@ const Todo = ({ onClick, completed, text }) => React.createElement(
 );
 
 const mapStateToTodoListProps = (state, { match }) => ({
-  todos: getVisibleTodos(state.todos, match.params.filter || 'all')
+  todos: getVisibleTodos(state, match.params.filter || 'all')
 });
 
 // const mapDispatchToTodoListProps = (dispatch) => ({

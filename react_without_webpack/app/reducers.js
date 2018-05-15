@@ -1,15 +1,4 @@
-/* global React, ReactDOM, Redux, ReactRedux _*/
-
-export const getVisibleTodos = (todos, filter) => {
-  switch (filter) {
-    case 'all':
-      return todos;
-    case 'completed':
-      return todos.filter(t => t.completed);
-    case 'active':
-      return todos.filter(t => !t.completed);
-  }
-};
+/* global React, ReactDOM, Redux, ReactRedux, _*/
 
 const todo = (state, action) => {
   switch (action.type) {
@@ -32,20 +21,50 @@ const todo = (state, action) => {
   }
 }
 
-const todos = (state = [], action) => {
+const byId = (state = {}, action) => {
   switch (action.type) {
     case 'ADD_TODO':
-      return [
-        ...state,
-        todo(undefined, action)
-      ];
     case 'TOGGLE_TODO':
-      return state.map(t => todo(t, action));
+      return {
+        ...state,
+        [action.id]: todo(state[action.id], action),
+      };
 
     default:
       return state;
   }
 }
+
+const allIds = (state=[], action) => {
+  switch (action.type) {
+    case 'ADD_TODO':
+      return [...state, action.id]
+    default:
+      return state;
+  }
+}
+
+const getAllTodos = (state) => 
+  state.allIds.map(id => state.byId[id])
+
+
+const getVisibleTodosPrimitive = (state, filter) => {
+  const allTodos = getAllTodos(state);
+  switch (filter) {
+    case 'all':
+    return allTodos;
+    case 'completed':
+    return allTodos.filter(t => t.completed);
+    case 'active':
+    return allTodos.filter(t => !t.completed);
+    default:
+    throw new Error(`Unknown filter: ${filter}.`);
+  }
+};
+
+const { combineReducers } = Redux;
+
+const todos = combineReducers({byId, allIds});
 
 // const visibilityFilter = (state = 'SHOW_ALL', action) => {
 //   switch (action.type) {
@@ -55,9 +74,12 @@ const todos = (state = [], action) => {
 //       return state;
 //   }
 // }
+//
 
-const { combineReducers } = Redux;
 
 export const todoApp = combineReducers({
   todos
 });
+
+export const getVisibleTodos = (state, filter) =>
+getVisibleTodosPrimitive(state.todos, filter)
