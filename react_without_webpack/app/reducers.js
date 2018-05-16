@@ -1,85 +1,49 @@
 /* global React, ReactDOM, Redux, ReactRedux, _*/
 
-const todo = (state, action) => {
-  switch (action.type) {
-    case 'ADD_TODO':
-      return {
-          id: action.id,
-          text: action.text,
-          completed: false
-        };
-    case 'TOGGLE_TODO':
-      if (state.id !== action.id) {
-        return state;
-      }
-      return {
-        ...state,
-        completed: !state.completed
-      };
-    default:
-      return state;
-  }
-}
-
 const byId = (state = {}, action) => {
   switch (action.type) {
-    case 'ADD_TODO':
-    case 'TOGGLE_TODO':
-      return {
-        ...state,
-        [action.id]: todo(state[action.id], action),
-      };
-
+    case 'RECEIVE_TODOS':
+      const nextState = { ...state };
+      action.response.forEach(todo => {
+        nextState[todo.id] = todo
+      });
+      return nextState;
     default:
       return state;
   }
 }
 
-const allIds = (state=[], action) => {
-  switch (action.type) {
-    case 'ADD_TODO':
-      return [...state, action.id]
-    default:
+const getTodo = (state, id) => state[id];
+
+const createList = (filter) => {
+  return (state=[], action) => {
+    if (action.filter !== filter) {
       return state;
+    }
+    switch (action.type) {
+      case 'RECEIVE_TODOS':
+        return action.response.map(todo => todo.id);
+      default:
+        return state;
+    }
   }
 }
 
-const getAllTodos = (state) => 
-  state.allIds.map(id => state.byId[id])
+const getIds = (state) => state;
 
 
-const getVisibleTodosPrimitive = (state, filter) => {
-  const allTodos = getAllTodos(state);
-  switch (filter) {
-    case 'all':
-    return allTodos;
-    case 'completed':
-    return allTodos.filter(t => t.completed);
-    case 'active':
-    return allTodos.filter(t => !t.completed);
-    default:
-    throw new Error(`Unknown filter: ${filter}.`);
-  }
+export const getVisibleTodos = (state, filter) => {
+  const ids = getIds(state.listByFilter[filter]);
+  return ids.map(id => getTodo(state.byId, id));
 };
 
 const { combineReducers } = Redux;
 
-const todos = combineReducers({byId, allIds});
+const listByFilter = combineReducers({
+  all: createList('all'),
+  active: createList('active'),
+  completed: createList('completed'),
 
-// const visibilityFilter = (state = 'SHOW_ALL', action) => {
-//   switch (action.type) {
-//     case 'SET_VISIBILITY_FILTER':
-//       return action.filter;
-//     default:
-//       return state;
-//   }
-// }
-//
+})
 
-
-export const todoApp = combineReducers({
-  todos
-});
-
-export const getVisibleTodos = (state, filter) =>
-getVisibleTodosPrimitive(state.todos, filter)
+export const todoApp = combineReducers({byId, listByFilter});
