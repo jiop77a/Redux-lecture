@@ -4,36 +4,36 @@ import { todoApp } from './reducers.js';
 
 const { createStore } = Redux;
 
-const addLoggingToDispatch = store => {
-  const rawDispatch = store.dispatch;
-  return action => {
-    console.group(action.type);
-    console.log('%c prev state', 'color: gray', store.getState());
-    console.log('%c action', 'color: blue', action);
-    const returnValue = rawDispatch(action);
-    console.log('%c next state', 'color: green', store.getState());
-    console.groupEnd(action.type);
-    return returnValue;
-  };
+const logger = store => next => action => {
+  console.group(action.type);
+  console.log('%c prev state', 'color: gray', store.getState());
+  console.log('%c action', 'color: blue', action);
+  const returnValue = next(action);
+  console.log('%c next state', 'color: green', store.getState());
+  console.groupEnd(action.type);
+  return returnValue;
 };
 
-const addPromiseSupportToDispatch = store => {
-  const rawDispatch = store.dispatch;
-  return action => {
-    if (typeof action.then === 'function') {
-      return action.then(rawDispatch);
-    }
-    return rawDispatch(action);
-  };
+const promise = store => next => action => {
+  if (typeof action.then === 'function') {
+    return action.then(next);
+  }
+  return next(action);
+};
+
+const wrapDispatchWithMiddlewares = (store, middlewares) => {
+  middlewares.slice().reverse().forEach(middleware => {
+    store.dispatch = middleware(store)(store.dispatch);
+  });
 };
 
 export const configureStore = () => {
   // const persistedState = loadState();
 
   const store = createStore(todoApp);
+  const middlewares = [promise, logger];
 
-  store.dispatch = addLoggingToDispatch(store);
-  store.dispatch = addPromiseSupportToDispatch(store);
+  wrapDispatchWithMiddlewares(store, middlewares);
 
   // store.subscribe(_.throttle(() => {
   //   saveState({
