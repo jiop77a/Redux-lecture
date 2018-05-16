@@ -1,18 +1,22 @@
-/* global React, ReactDOM, Redux, ReactRedux _*/
+/* global React, ReactDOM, Redux, ReactRedux, reduxLogger _*/
 // import {loadState, saveState} from './localStorage.js';
 import {todoApp} from './reducers.js';
 
-const { createStore } = Redux;
+const { createStore, applyMiddleware } = Redux;
 
-const logger = (store) => (next) => (action) => {
-  console.group(action.type);
-  console.log('%c prev state', 'color: gray', store.getState());
-  console.log('%c action', 'color: blue', action);
-  const returnValue = next(action);
-  console.log('%c next state', 'color: green', store.getState());
-  console.groupEnd(action.type);
-  return returnValue;
-};
+const { createLogger } = reduxLogger;
+
+
+
+// const logger = (store) => (next) => (action) => {
+//   console.group(action.type);
+//   console.log('%c prev state', 'color: gray', store.getState());
+//   console.log('%c action', 'color: blue', action);
+//   const returnValue = next(action);
+//   console.log('%c next state', 'color: green', store.getState());
+//   console.groupEnd(action.type);
+//   return returnValue;
+// };
 
 
 const promise = (store) => (next) => (action) => {
@@ -22,20 +26,19 @@ const promise = (store) => (next) => (action) => {
   return next(action);
 };
 
-const wrapDispatchWithMiddlewares = (store, middlewares) => {
-  middlewares.slice().reverse().forEach(middleware => {
-      store.dispatch = middleware(store)(store.dispatch);
-    }
-  );
-};
+// const wrapDispatchWithMiddlewares = (store, middlewares) => {
+//   middlewares.slice().reverse().forEach(middleware => {
+//       store.dispatch = middleware(store)(store.dispatch);
+//     }
+//   );
+// };
 
 export const configureStore = () => {
   // const persistedState = loadState();
 
-  const store = createStore(todoApp);
-  const middlewares = [promise, logger];
+  const middlewares = [promise, createLogger()];
 
-  wrapDispatchWithMiddlewares(store, middlewares);
+  // wrapDispatchWithMiddlewares(store, middlewares);
 
   // store.subscribe(_.throttle(() => {
   //   saveState({
@@ -43,5 +46,9 @@ export const configureStore = () => {
   //   });
   // }, 1000));
 
+  const store = createStore(
+    todoApp,
+    applyMiddleware(...middlewares)
+  );
   return store;
 };
