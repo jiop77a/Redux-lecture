@@ -1,7 +1,7 @@
 /* global React, PropTypes, ReactRedux, ReactRouterDOM */
 // import { store } from './main.js';
 import * as actions from './action_creators.js';
-import { getVisibleTodos } from './reducers.js';
+import { getVisibleTodos, getIsFetching } from './reducers.js';
 
 
 const { NavLink, withRouter } = ReactRouterDOM;
@@ -27,15 +27,19 @@ class VisibleTodoListAdvanced extends React.Component {
   }
 
   fetchData() {
-    const { filter, fetchTodos } = this.props;
+    const { filter, requestTodos, fetchTodos } = this.props;
+    requestTodos(filter);
     fetchTodos(filter);
   }
 
   render() {
-    const {toggleTodo, ...rest} = this.props;
+    const {toggleTodo, todos, isFetching} = this.props;
+    if (isFetching && !todos.length) {
+      return <p>Loading...</p>;
+    }
     return (
       <TodoList
-        {...rest}
+        todos={todos}
         onTodoClick={toggleTodo}
       />
     );
@@ -46,6 +50,7 @@ const mapStateToTodoListProps = (state, { match }) => {
   const filter = match.params.filter || 'all';
   return {
     todos: getVisibleTodos(state, filter),
+    isFetching: getIsFetching(state, filter),
     filter
   };
 };

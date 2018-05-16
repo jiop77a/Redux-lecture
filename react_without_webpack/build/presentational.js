@@ -1,11 +1,9 @@
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
-
 /* global React, PropTypes, ReactRedux, ReactRouterDOM */
 // import { store } from './main.js';
 import * as actions from './action_creators.js';
-import { getVisibleTodos } from './reducers.js';
+import { getVisibleTodos, getIsFetching } from './reducers.js';
 
 const { NavLink, withRouter } = ReactRouterDOM;
 
@@ -30,17 +28,24 @@ class VisibleTodoListAdvanced extends React.Component {
   }
 
   fetchData() {
-    const { filter, fetchTodos } = this.props;
+    const { filter, requestTodos, fetchTodos } = this.props;
+    requestTodos(filter);
     fetchTodos(filter);
   }
 
   render() {
-    const _props = this.props,
-          { toggleTodo } = _props,
-          rest = _objectWithoutProperties(_props, ['toggleTodo']);
-    return React.createElement(TodoList, _extends({}, rest, {
+    const { toggleTodo, todos, isFetching } = this.props;
+    if (isFetching && !todos.length) {
+      return React.createElement(
+        'p',
+        null,
+        'Loading...'
+      );
+    }
+    return React.createElement(TodoList, {
+      todos: todos,
       onTodoClick: toggleTodo
-    }));
+    });
   }
 }
 
@@ -48,6 +53,7 @@ const mapStateToTodoListProps = (state, { match }) => {
   const filter = match.params.filter || 'all';
   return {
     todos: getVisibleTodos(state, filter),
+    isFetching: getIsFetching(state, filter),
     filter
   };
 };
