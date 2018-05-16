@@ -6,43 +6,12 @@ const { createStore, applyMiddleware } = Redux;
 
 const { createLogger } = reduxLogger;
 
-// const logger = (store) => (next) => (action) => {
-//   console.group(action.type);
-//   console.log('%c prev state', 'color: gray', store.getState());
-//   console.log('%c action', 'color: blue', action);
-//   const returnValue = next(action);
-//   console.log('%c next state', 'color: green', store.getState());
-//   console.groupEnd(action.type);
-//   return returnValue;
-// };
-
-
-const promise = store => next => action => {
-  if (typeof action.then === 'function') {
-    return action.then(next);
-  }
-  return next(action);
-};
-
-// const wrapDispatchWithMiddlewares = (store, middlewares) => {
-//   middlewares.slice().reverse().forEach(middleware => {
-//       store.dispatch = middleware(store)(store.dispatch);
-//     }
-//   );
-// };
+const thunk = store => next => action => typeof action === 'function' ? action(store.dispatch) : next(action);
 
 export const configureStore = () => {
   // const persistedState = loadState();
 
-  const middlewares = [promise, createLogger()];
-
-  // wrapDispatchWithMiddlewares(store, middlewares);
-
-  // store.subscribe(_.throttle(() => {
-  //   saveState({
-  //     todos: store.getState().todos
-  //   });
-  // }, 1000));
+  const middlewares = [thunk, createLogger()];
 
   const store = createStore(todoApp, applyMiddleware(...middlewares));
   return store;
