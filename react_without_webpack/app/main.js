@@ -9,3 +9,5 @@ ReactDOM.render(
   <Root store={store}></Root>,
   document.getElementById('root')
 );
+
+window.store = store;

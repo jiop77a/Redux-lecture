@@ -5,7 +5,7 @@ const { combineReducers } = Redux;
 
 const byId = (state = {}, action) => {
   switch (action.type) {
-    case 'RECEIVE_TODOS':
+    case 'FETCH_TODOS_SUCCESS':
       const nextState = _extends({}, state);
       action.response.forEach(todo => {
         nextState[todo.id] = todo;
@@ -19,12 +19,13 @@ const byId = (state = {}, action) => {
 const getTodo = (state, id) => state[id];
 
 const createList = filter => {
+
   const ids = (state = [], action) => {
     if (action.filter !== filter) {
       return state;
     }
     switch (action.type) {
-      case 'RECEIVE_TODOS':
+      case 'FETCH_TODOS_SUCCESS':
         return action.response.map(todo => todo.id);
       default:
         return state;
@@ -36,21 +37,38 @@ const createList = filter => {
       return state;
     }
     switch (action.type) {
-      case 'REQUEST_TODOS':
+      case 'FETCH_TODOS_REQUEST':
         return true;
-      case 'RECEIVE_TODOS':
+      case 'FETCH_TODOS_SUCCESS':
+      case 'FETCH_TODOS_FAILURE':
         return false;
       default:
         return state;
     }
   };
 
-  return combineReducers({ ids, isFetching });
+  const errorMessage = (state = null, action) => {
+    if (action.filter !== filter) {
+      return state;
+    }
+    switch (action.type) {
+      case 'FETCH_TODOS_FAILURE':
+        return action.message;
+      case 'FETCH_TODOS_REQUEST':
+      case 'FETCH_TODOS_SUCCESS':
+        return null;
+      default:
+        return state;
+    }
+  };
+
+  return combineReducers({ ids, isFetching, errorMessage });
 };
 
 const fromList = {
   getIds: state => state.ids,
-  getIsFetching: state => state.isFetching
+  getIsFetching: state => state.isFetching,
+  getErrorMessage: state => state.errorMessage
 };
 
 export const getVisibleTodos = (state, filter) => {
@@ -66,6 +84,8 @@ const listByFilter = combineReducers({
 });
 
 export const getIsFetching = (state, filter) => fromList.getIsFetching(state.listByFilter[filter]);
+
+export const getErrorMessage = (state, filter) => fromList.getErrorMessage(state.listByFilter[filter]);
 
 export const todoApp = combineReducers({ byId, listByFilter });
 //# sourceMappingURL=../reducers.js.map

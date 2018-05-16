@@ -1,5 +1,6 @@
-/*global uuidv4*/
+/*global uuidv4, Promise*/
 import * as api from './fakeDatabase.js';
+import { getIsFetching } from './reducers.js';
 
 export const addTodo = (text) => ({
     type: 'ADD_TODO',
@@ -17,20 +18,40 @@ export const toggleTodo = (id) => ({
   id
 });
 
-const receiveTodos = (filter, response) => ({
-  type: 'RECEIVE_TODOS',
-  filter,
-  response
-});
 
-export const fetchTodos = (filter) => (dispatch) => {
-  dispatch(requestTodos(filter));
-  return api.fetchTodos(filter).then(response => {
-    dispatch(receiveTodos(filter, response));
+// export const fetchTodos = (filter) => (dispatch, getState) => {
+//   if (getIsFetching(getState(), filter)) {
+//     return Promise.resolve();
+//   }
+//
+//   dispatch(requestTodos(filter));
+//   return api.fetchTodos(filter).then(response => {
+//     dispatch(receiveTodos(filter, response));
+//   });
+// };
+
+export const fetchTodos = (filter) => async (dispatch, getState) => {
+  if (getIsFetching(getState(), filter)) {
+    return;
+  }
+
+  dispatch({
+    type: 'FETCH_TODOS_REQUEST',
+    filter
   });
-};
 
-const requestTodos = (filter) => ({
-  type: 'REQUEST_TODOS',
-  filter
-});
+  try {
+    let response = await api.fetchTodos(filter);
+    dispatch({
+      type: 'FETCH_TODOS_SUCCESS',
+      filter,
+      response
+    });
+  } catch (error) {
+    dispatch({
+      type: 'FETCH_TODOS_FAILURE',
+      filter,
+      message: error.message || 'Something went wrong.'
+    })
+  }
+};

@@ -1,13 +1,11 @@
-/* global React, ReactDOM, Redux, ReactRedux, reduxLogger _*/
+/* global React, ReactDOM, Redux, ReactRedux, reduxLogger, ReduxThunk*/
 // import {loadState, saveState} from './localStorage.js';
 import {todoApp} from './reducers.js';
 
 const { createStore, applyMiddleware } = Redux;
-
+const thunk = ReduxThunk.default;
 const { createLogger } = reduxLogger;
 
-const thunk = (store) => (next) => (action) =>
-  typeof action === 'function' ? action(store.dispatch) : next(action);
 
 
 export const configureStore = () => {

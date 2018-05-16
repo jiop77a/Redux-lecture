@@ -18,6 +18,8 @@ const logger = (store) => (next) => (action) => {
   return returnValue;
 };
 
+// const thunk = (store) => (next) => (action) =>
+//   typeof action === 'function' ? action(store.dispatch) : next(action);
 
 // const promise = (store) => (next) => (action) => {
 //   if (typeof action.then === 'function') {

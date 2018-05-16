@@ -3,7 +3,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 /* global React, PropTypes, ReactRedux, ReactRouterDOM */
 // import { store } from './main.js';
 import * as actions from './action_creators.js';
-import { getVisibleTodos, getIsFetching } from './reducers.js';
+import { getVisibleTodos, getIsFetching, getErrorMessage } from './reducers.js';
+import { FetchError } from './FetchError.js';
 
 const { NavLink, withRouter } = ReactRouterDOM;
 
@@ -29,17 +30,25 @@ class VisibleTodoListAdvanced extends React.Component {
 
   fetchData() {
     const { filter, fetchTodos } = this.props;
-    fetchTodos(filter);
+    fetchTodos(filter).then(() => console.log('done'));
   }
 
   render() {
-    const { toggleTodo, todos, isFetching } = this.props;
+    const { toggleTodo, todos, errorMessage, isFetching } = this.props;
+
     if (isFetching && !todos.length) {
       return React.createElement(
         'p',
         null,
         'Loading...'
       );
+    }
+
+    if (errorMessage && !todos.length) {
+      return React.createElement(FetchError, {
+        message: errorMessage,
+        onRetry: () => this.fetchData()
+      });
     }
     return React.createElement(TodoList, {
       todos: todos,
@@ -52,6 +61,7 @@ const mapStateToTodoListProps = (state, { match }) => {
   const filter = match.params.filter || 'all';
   return {
     todos: getVisibleTodos(state, filter),
+    errorMessage: getErrorMessage(state, filter),
     isFetching: getIsFetching(state, filter),
     filter
   };
